@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\01.Domain\Core\WarehouseApp.Domain.Core\WarehouseApp.Domain.Core.csproj" />
+    <ProjectReference Include="..\..\02.Application\WarehouseApp.Application\WarehouseApp.Application.csproj" />
+    <ProjectReference Include="..\..\03.Infrastructure\DataAccess\WarehouseApp.Infra.Data.Repos.Ef\WarehouseApp.Infra.Data.Repos.Ef.csproj" />
+    <ProjectReference Include="..\..\03.Infrastructure\Db\Warehouse.Infra.Db.SqlServer.Ef\WarehouseApp.Infra.Db.SqlServer.Ef.csproj" />
+  </ItemGroup>
+
+</Project>
