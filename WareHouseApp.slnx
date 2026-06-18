@@ -1,0 +1,24 @@
+<Solution>
+  <Folder Name="/backend/" />
+  <Folder Name="/backend/src/" />
+  <Folder Name="/backend/src/01.Domain/" />
+  <Folder Name="/backend/src/01.Domain/Core/">
+    <Project Path="backend/src/01.Domain/Core/WarehouseApp.Domain.Core/WarehouseApp.Domain.Core.csproj" Id="920391f1-fcc8-456b-aa77-8dc1ed6d64cf" />
+  </Folder>
+  <Folder Name="/backend/src/02.Application/">
+    <Project Path="backend/src/02.Application/WarehouseApp.Application/WarehouseApp.Application.csproj" Id="a8d1444d-f71a-4e78-a78a-988714bc2aa8" />
+  </Folder>
+  <Folder Name="/backend/src/03.Infrastructure/" />
+  <Folder Name="/backend/src/03.Infrastructure/DataAccess/">
+    <Project Path="backend/src/03.Infrastructure/DataAccess/WarehouseApp.Infra.Data.Repos.Ef/WarehouseApp.Infra.Data.Repos.Ef.csproj" Id="de3dc0dd-3b3d-4c5f-9973-bc4ea6a5d428" />
+  </Folder>
+  <Folder Name="/backend/src/03.Infrastructure/Db/">
+    <Project Path="backend/src/03.Infrastructure/Db/Warehouse.Infra.Db.SqlServer.Ef/WarehouseApp.Infra.Db.SqlServer.Ef.csproj" Id="3c57c897-16f5-43e3-89ae-69e155215df7" />
+  </Folder>
+  <Folder Name="/backend/src/04.Presentation/">
+    <Project Path="backend/src/04.Presentation/Warehouse.Api/Warehouse.Api.csproj" Id="90c6d367-7dc9-4a6a-8721-129bcb15bee4" />
+    <Project Path="backend/src/04.Presentation/Warehouse.Mvc/Warehouse.Mvc.csproj" Id="38c000ca-c842-42cc-8671-74da9f0f15c4" />
+  </Folder>
+  <Folder Name="/docs/" />
+  <Folder Name="/frontend/" />
+</Solution>
