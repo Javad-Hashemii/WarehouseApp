@@ -17,7 +17,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.8")
+                .HasAnnotation("ProductVersion", "10.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -50,6 +50,43 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConcurrencyStamp = "c7b013f0-5201-4317-abd8-c211f91b7330",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ConcurrencyStamp = "033fa693-010e-436f-a602-e0f0dfc836e4",
+                            Name = "WarehouseManager",
+                            NormalizedName = "WAREHOUSEMANAGER"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ConcurrencyStamp = "5c52c6f6-49a3-4876-8805-5da845cce51c",
+                            Name = "DepartmentHead",
+                            NormalizedName = "DEPARTMENTHEAD"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ConcurrencyStamp = "81ba5de7-f4e7-4bd9-9fc4-8bdc87ccbf86",
+                            Name = "WorkshopSupervisor",
+                            NormalizedName = "WORKSHOPSUPERVISOR"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ConcurrencyStamp = "d11b22e1-4545-4b7d-b3b3-8551da7ebf54",
+                            Name = "ProcurementOfficer",
+                            NormalizedName = "PROCUREMENTOFFICER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -234,6 +271,26 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "6f4b8a3d-9f21-4b12-889c-123456abcdef",
+                            Email = "omid@gmail.com",
+                            EmailConfirmed = false,
+                            FullName = "Omid Hashemi",
+                            IsActive = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "OMID.GMAIL.COM",
+                            NormalizedUserName = "OMID@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAENwIvr4Pn6t28/KI5Kh0/n+zAPGZGOKjq5iWt0sfzvdBRz/UaaiDbwNH2e5JbmDF0A==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "f3a9e8b2-1234-4bcd-9f2a-abcdef123456",
+                            TwoFactorEnabled = false,
+                            UserName = "omid@gmail.com"
+                        });
                 });
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Category", b =>
@@ -392,7 +449,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         });
                 });
 
-            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Inventory", b =>
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.InventoryBalance", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -425,9 +482,14 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Property<int>("WarehouseId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("WorkshopId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("WarehouseId");
+
+                    b.HasIndex("WorkshopId");
 
                     b.HasIndex("ProductId", "WarehouseId")
                         .IsUnique();
@@ -1054,6 +1116,9 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("DestinationWarehouseId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Notes")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -1071,6 +1136,9 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Property<int?>("RequestId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SourceWarehouseId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("TransactionDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -1085,20 +1153,19 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Property<int?>("UpdatedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("DestinationWarehouseId");
 
                     b.HasIndex("PerformedByUserId");
 
                     b.HasIndex("RequestId");
 
+                    b.HasIndex("SourceWarehouseId");
+
                     b.HasIndex("TransactionDate");
 
-                    b.HasIndex("WarehouseId");
-
-                    b.HasIndex("ProductId", "WarehouseId", "TransactionDate");
+                    b.HasIndex("ProductId", "SourceWarehouseId", "DestinationWarehouseId", "TransactionDate");
 
                     b.ToTable("InventoryTransactions");
                 });
@@ -1298,7 +1365,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Inventory", b =>
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.InventoryBalance", b =>
                 {
                     b.HasOne("WarehouseApp.Domain.Core.Entities.Product", "Product")
                         .WithMany()
@@ -1312,9 +1379,16 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.Workshop", "Workshop")
+                        .WithMany("InventoryBalances")
+                        .HasForeignKey("WorkshopId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Product");
 
                     b.Navigation("Warehouse");
+
+                    b.Navigation("Workshop");
                 });
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Product", b =>
@@ -1412,6 +1486,11 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Transaction", b =>
                 {
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.Warehouse", "DestinationWarehouse")
+                        .WithMany("IncomingTransactions")
+                        .HasForeignKey("DestinationWarehouseId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("WarehouseApp.Domain.Core.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("PerformedByUserId")
@@ -1429,17 +1508,18 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         .HasForeignKey("RequestId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("WarehouseApp.Domain.Core.Entities.Warehouse", "Warehouse")
-                        .WithMany("InventoryTransactions")
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.Warehouse", "SourceWarehouse")
+                        .WithMany("OutgoingTransactions")
+                        .HasForeignKey("SourceWarehouseId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("DestinationWarehouse");
 
                     b.Navigation("Product");
 
                     b.Navigation("Request");
 
-                    b.Navigation("Warehouse");
+                    b.Navigation("SourceWarehouse");
                 });
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Warehouse", b =>
@@ -1499,15 +1579,19 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Warehouse", b =>
                 {
+                    b.Navigation("IncomingTransactions");
+
                     b.Navigation("InventoryBalances");
 
-                    b.Navigation("InventoryTransactions");
+                    b.Navigation("OutgoingTransactions");
 
                     b.Navigation("Requests");
                 });
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Workshop", b =>
                 {
+                    b.Navigation("InventoryBalances");
+
                     b.Navigation("Requests");
                 });
 #pragma warning restore 612, 618
