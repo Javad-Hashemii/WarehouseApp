@@ -1,31 +1,150 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+/* ==========================================================
+   1. GLOBAL LAYOUT (Structure & Sidebar)
+   ========================================================== */
 body {
-  margin-bottom: 60px;
+    font-family: Tahoma, 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 0;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+.app-wrapper {
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* --- Sidebar --- */
+.sidebar {
+    width: 260px;
+    background-color: #1e293b; /* Dark Navy Sidebar */
+    color: #f8fafc;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
 }
+
+.sidebar-brand {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    font-size: 1.25rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-nav {
+    list-style: none;
+    padding: 1rem 0;
+    margin: 0;
+}
+
+.sidebar-item {
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    gap: 0.75rem;
+}
+
+    .sidebar-link i {
+        font-size: 1.1rem;
+    }
+
+    .sidebar-link:hover, .sidebar-link.active {
+        color: #ffffff;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-right: 4px solid #3b82f6; /* Blue active bar */
+    }
+
+/* ==========================================================
+   2. TOP NAVBAR & MAIN CONTENT (Modern Dark Navy)
+   ========================================================== */
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.top-navbar {
+    height: 70px;
+    background-color: #0f172a; /* Deep, modern navy header */
+    display: flex;
+    align-items: center;
+    z-index: 90;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+    .top-navbar .btn-light {
+        background-color: transparent;
+        border: none;
+        color: #f8fafc;
+    }
+
+        .top-navbar .btn-light:hover,
+        .top-navbar .btn-light:focus {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+    .top-navbar .dropdown-toggle::after {
+        margin-right: 0.5em;
+        margin-left: 0;
+        color: #f8fafc;
+    }
+
+.content-wrapper {
+    padding: 0;
+    flex-grow: 1;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+}
+
+/* ==========================================================
+   3. GLOBAL BUTTONS & LINKS
+   ========================================================== */
+a.navbar-brand {
+    font-weight: 700;
+    color: #1e293b !important;
+}
+
+a {
+    color: #2563eb;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+    a:hover {
+        color: #1e40af;
+    }
+
+/* Modern Primary Buttons (Login, etc.) */
+.btn-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    color: #ffffff;
+    font-weight: 500;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn-primary:hover, .btn-primary:focus {
+        background-color: #60a5fa;
+        border-color: #60a5fa;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px -1px rgba(59, 130, 246, 0.4);
+    }
