@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using WarehouseApp.Application;
+using WarehouseApp.Domain.Core.Configurations;
 using WarehouseApp.Domain.Core.Entities;
+using WarehouseApp.Infra.Data.Repos.Ef;
 using WarehouseApp.Infra.Db.SqlServer.Ef.DbContext;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,8 +14,14 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+var siteSettings = builder.Configuration
+    .GetSection("SiteSettings")
+    .Get<SiteSettings>()
+    ?? throw new InvalidOperationException("SiteSettings section not found");
+builder.Services.AddSingleton(siteSettings);
+
+builder.Services.AddApplicationServices();
+builder.Services.AddDataAccessEf(siteSettings);
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(
     options =>
@@ -38,6 +47,7 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
 
 app.UseHttpsRedirection();
 
