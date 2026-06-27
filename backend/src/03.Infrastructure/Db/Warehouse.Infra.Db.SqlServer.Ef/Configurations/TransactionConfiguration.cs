@@ -11,7 +11,6 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
     {
         public void Configure(EntityTypeBuilder<Transaction> builder)
         {
-
             builder.HasKey(it => it.Id);
 
             builder.Property(it => it.Quantity)
@@ -34,9 +33,14 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
                 .HasForeignKey(it => it.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(it => it.Warehouse)
-                .WithMany(w => w.InventoryTransactions)
-                .HasForeignKey(it => it.WarehouseId)
+            builder.HasOne(it => it.SourceWarehouse)
+                .WithMany()
+                .HasForeignKey(it => it.SourceWarehouseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(it => it.DestinationWarehouse)
+                .WithMany()
+                .HasForeignKey(it => it.DestinationWarehouseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(it => it.Request)
@@ -51,7 +55,13 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
 
             builder.HasIndex(it => it.TransactionDate);
 
-            builder.HasIndex(it => new { it.ProductId, it.WarehouseId, it.TransactionDate });
+            builder.HasIndex(it => new
+            {
+                it.ProductId,
+                it.SourceWarehouseId,
+                it.DestinationWarehouseId,
+                it.TransactionDate
+            });
         }
     }
 }
