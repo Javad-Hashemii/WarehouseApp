@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using WarehouseApp.Domain.Core.Entities;
 
@@ -14,6 +15,23 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
             builder.Property(au => au.IsActive)
                 .HasDefaultValue(false);
 
+                        var hasher = new PasswordHasher<ApplicationUser>();
+
+
+            builder.HasData(
+                new ApplicationUser
+                {
+                    Id = 1,
+                    FullName = "Omid Hashemi",
+                    UserName = "omid@gmail.com",
+                    NormalizedUserName = "OMID@GMAIL.COM",
+                    PasswordHash = "AQAAAAIAAYagAAAAENwIvr4Pn6t28/KI5Kh0/n+zAPGZGOKjq5iWt0sfzvdBRz/UaaiDbwNH2e5JbmDF0A==",
+                    Email = "omid@gmail.com",
+                    NormalizedEmail = "OMID.GMAIL.COM",
+                    SecurityStamp = "f3a9e8b2-1234-4bcd-9f2a-abcdef123456",
+                    ConcurrencyStamp = "6f4b8a3d-9f21-4b12-889c-123456abcdef" // static
+
+                });
         }
     }
 }
