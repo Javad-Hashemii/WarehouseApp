@@ -6,12 +6,17 @@ namespace WarehouseApp.Domain.Core.Enums
 {
     public enum RequestStatus
     {
-        PendingWorkshop,
-        PendingDepartment,
-        PendingCentral,
-        PendingProcurement,
-        Fulfilled,
-        DeniedByDepartment,
-        DeniedByCentral
+        /*  PendingWorkshop,
+          PendingDepartment,
+          PendingCentral,
+          PendingProcurement,
+          Fulfilled,
+          DeniedByDepartment,
+          DeniedByCentral */
+
+        Pending,
+        Approved,
+        Rejected,
+        Fulfilled
     }
 }
