@@ -1,8 +1,29 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "صفحه اصلی";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex flex-column justify-content-center align-items-center text-center w-100"
+     style="min-height: calc(100vh - 70px);
+    background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('/images/_common/FactoryImage.jpg') center/cover no-repeat;">
+
+    <div class="text-white p-5 rounded-3" style="backdrop-filter: blur(3px); background: rgba(255, 255, 255, 0.05);">
+
+        <h1 class="display-3 fw-bold mb-3 text-shadow">انبار اکسین</h1>
+
+        <p class="lead mb-5 fs-4 text-light">سیستم یکپارچه مدیریت انبار و رهگیری مصالح</p>
+
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="Dashboard" asp-action="Index" class="btn btn-success btn-lg px-5 py-3 shadow-sm rounded-pill fw-bold">
+                <i class="bi bi-grid-1x2 me-2"></i> ورود به پنل مدیریت
+            </a>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-lg px-5 py-3 shadow-sm rounded-pill fw-bold">
+                <i class="bi bi-box-arrow-in-right me-2"></i> ورود به سیستم
+            </a>
+        }
+
+    </div>
 </div>
