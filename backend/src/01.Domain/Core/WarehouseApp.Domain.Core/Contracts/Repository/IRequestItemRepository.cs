@@ -10,5 +10,9 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
         Task<bool> CreateRequestItemAsync(CreateRequestItemsDto createRequestItemsDto, CancellationToken ct);
         Task<List<GetAllRequestItems>> GetAllRequestItemsAsync(CancellationToken ct);
         Task<List<GetAllRequestItems>> GetAllRequestItemsByRequestIdAsync(int requestId, CancellationToken ct);
+        Task<bool> IsRequestItemExist(int requestItemId, CancellationToken cancellationToken);
+        Task<bool> UpdateRequestItemAsync(UpdateRequestItemDto updateRequestItemDto, CancellationToken cancellationToken);
+
+
     }
 }
