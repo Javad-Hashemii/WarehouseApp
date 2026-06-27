@@ -11,5 +11,6 @@ namespace WarehouseApp.Domain.Core.Entities
         public City City { get; set; }
 
         public ICollection<Request> Requests { get; set; }
+        public ICollection<InventoryBalance> InventoryBalances { get; set; }
     }
 }
