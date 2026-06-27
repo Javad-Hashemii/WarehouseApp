@@ -1,0 +1,129 @@
+﻿@{
+    ViewData["Title"] = "داشبورد انبار";
+    // Layout = "~/Views/Shared/_Layout.cshtml"; // Ensure your layout supports RTL
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/dashboard.css" asp-append-version="true" />
+}
+
+<div class="dashboard-wrapper" dir="rtl">
+
+    <div class="row g-4 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="widget-card">
+                <div class="widget-info">
+                    <span class="widget-title">درخواست‌های در انتظار</span>
+                    <h3 class="widget-value">۱۲</h3>
+                </div>
+                <div class="widget-icon-wrapper icon-warning">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="widget-card">
+                <div class="widget-info">
+                    <span class="widget-title">کالاهای زیر نقطه سفارش</span>
+                    <h3 class="widget-value">۵</h3>
+                </div>
+                <div class="widget-icon-wrapper icon-danger">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="widget-card">
+                <div class="widget-info">
+                    <span class="widget-title">حواله‌های خروجی امروز</span>
+                    <h3 class="widget-value">۲۸</h3>
+                </div>
+                <div class="widget-icon-wrapper icon-success">
+                    <i class="bi bi-box-arrow-right"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="widget-card">
+                <div class="widget-info">
+                    <span class="widget-title">تناژ مواد کلیدی (سیمان/فولاد)</span>
+                    <h3 class="widget-value">۴۵۰ تن</h3>
+                </div>
+                <div class="widget-icon-wrapper icon-primary">
+                    <i class="bi bi-layers"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="content-card">
+                <h5 class="content-card-title">روند ورود و خروج مواد (ماهانه)</h5>
+                <canvas id="flowTrendChart" height="100"></canvas>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="content-card">
+                <h5 class="content-card-title">سهم مصرف بر اساس کارگاه</h5>
+                <canvas id="workshopShareChart" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="content-card">
+                <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+                    <h5 class="content-card-title mb-0 border-0 pb-0">آخرین اسناد و گردش کالا</h5>
+                    <a href="#" class="btn btn-sm btn-outline-secondary">مشاهده همه</a>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="table dashboard-table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>شماره سند</th>
+                                <th>نوع عملیات</th>
+                                <th>نام کالا</th>
+                                <th>مقدار</th>
+                                <th>مبدا / مقصد</th>
+                                <th>تاریخ</th>
+                                <th>وضعیت</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#OUT-1024</td>
+                                <td><span class="text-danger"><i class="bi bi-arrow-down-left"></i> حواله خروج</span></td>
+                                <td>سیمان تیپ ۵</td>
+                                <td>۵۰ تن</td>
+                                <td>کارگاه سدسازی (فاز ۲)</td>
+                                <td>۱۴۰۳/۰۳/۲۴</td>
+                                <td><span class="badge bg-success badge-status">تایید شده</span></td>
+                            </tr>
+                            <tr>
+                                <td>#IN-8051</td>
+                                <td><span class="text-success"><i class="bi bi-arrow-up-right"></i> رسید ورود</span></td>
+                                <td>میلگرد ۱۶</td>
+                                <td>۱۲۰ شاخه</td>
+                                <td>تامین‌کننده فولاد خوزستان</td>
+                                <td>۱۴۰۳/۰۳/۲۴</td>
+                                <td><span class="badge bg-success badge-status">تایید شده</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/pages/dashboard-charts.js" asp-append-version="true"></script>
+}
