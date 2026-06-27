@@ -57,5 +57,21 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                 })
                 .ToListAsync(ct);
         }
+
+        public async Task<bool> UpdateRequestItemAsync(UpdateRequestItemDto updateRequestItemDto, CancellationToken cancellationToken)
+        {
+            var result = _context.RequestItems
+                .Where(ri => ri.Id == updateRequestItemDto.Id)
+                .ExecuteUpdateAsync(setters => setters
+                .SetProperty(ri => ri.ProductId, updateRequestItemDto.ProductId)
+                .SetProperty(ri => ri.QuantityRequested, updateRequestItemDto.QuantityRequested),cancellationToken);
+            return await result > 0;
+        }
+
+        public async Task<bool> IsRequestItemExist(int requestItemId,CancellationToken cancellationToken)
+        {
+            return await _context.Products.AnyAsync(ri => ri.Id == requestItemId, cancellationToken);
+
+        }
     }
 }
