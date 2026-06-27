@@ -28,6 +28,13 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
                 .HasForeignKey(ib => ib.WarehouseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+
+            // changed: added Workshop relationship (nullable FK)
+            builder.HasOne(ib => ib.Workshop)
+                .WithMany(w => w.InventoryBalances)
+                .HasForeignKey(ib => ib.WorkshopId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasIndex(ib => new { ib.ProductId, ib.WarehouseId })
                 .IsUnique();
         }
