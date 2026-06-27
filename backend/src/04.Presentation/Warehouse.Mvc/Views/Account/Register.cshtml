@@ -1,0 +1,75 @@
+﻿@model Warehouse.Mvc.Models.Account.RegisterViewModel
+
+@{
+    ViewData["Title"] = "ثبت نام";
+}
+
+<div class="d-flex flex-column justify-content-center align-items-center w-100"
+     style="min-height: calc(100vh - 70px);
+    background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('/images/_common/FactoryImage.jpg') center/cover no-repeat;"
+     dir="rtl">
+
+    <div class="text-white p-4 p-sm-5 rounded-3 shadow-lg w-100"
+         style="backdrop-filter: blur(5px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); max-width: 600px;">
+
+        <div class="text-center mb-4">
+            <h3 class="fw-bold mb-2">ایجاد حساب کاربری</h3>
+            <p class="text-light small">برای استفاده از سیستم، فرم زیر را تکمیل کنید</p>
+        </div>
+
+        <form asp-controller="Register" asp-action="Index" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-warning mb-3 fw-bold small text-center"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="FullName" class="form-label fw-semibold"></label>
+                <input asp-for="FullName" class="form-control bg-light border-0" placeholder="مثال: علی احمدی" />
+                <span asp-validation-for="FullName" class="text-warning small"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="Email" class="form-label fw-semibold"></label>
+                    <input asp-for="Email" class="form-control bg-light border-0" placeholder="name@example.com" dir="ltr" />
+                    <span asp-validation-for="Email" class="text-warning small"></span>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="SelectedRole" class="form-label fw-semibold"></label>
+                    <select asp-for="SelectedRole" asp-items="Model.AvailableRoles" class="form-select bg-light border-0">
+                        <option value="">-- انتخاب کنید --</option>
+                    </select>
+                    <span asp-validation-for="SelectedRole" class="text-warning small"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="Password" class="form-label fw-semibold"></label>
+                    <input asp-for="Password" class="form-control bg-light border-0" dir="ltr" />
+                    <span asp-validation-for="Password" class="text-warning small"></span>
+                </div>
+
+                <div class="col-md-6 form-group mb-4">
+                    <label asp-for="ConfirmPassword" class="form-label fw-semibold"></label>
+                    <input asp-for="ConfirmPassword" class="form-control bg-light border-0" dir="ltr" />
+                    <span asp-validation-for="ConfirmPassword" class="text-warning small"></span>
+                </div>
+            </div>
+
+            <div class="d-grid mt-2">
+                <button type="submit" class="btn btn-primary btn-lg py-3 shadow-sm rounded-pill fw-bold">ثبت نام در سیستم</button>
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="text-light small mb-0">قبلاً ثبت نام کرده‌اید؟ <a asp-controller="Login" asp-action="Index" class="text-info text-decoration-none fw-bold">وارد شوید</a></p>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

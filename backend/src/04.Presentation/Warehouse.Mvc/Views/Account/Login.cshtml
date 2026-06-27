@@ -1,0 +1,58 @@
+﻿@model Warehouse.Mvc.Models.Account.LoginViewModel
+
+@{
+    ViewData["Title"] = "ورود به حساب کاربری";
+}
+
+<div class="d-flex flex-column justify-content-center align-items-center w-100"
+     style="min-height: calc(100vh - 70px);
+    background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('/images/_common/FactoryImage.jpg') center/cover no-repeat;"
+     dir="rtl">
+
+    <div class="text-white p-4 p-sm-5 rounded-3 shadow-lg w-100"
+         style="backdrop-filter: blur(5px); background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); max-width: 450px;">
+
+        <div class="text-center mb-4">
+            <h3 class="fw-bold mb-2">ورود به سیستم</h3>
+            <p class="text-light small">لطفاً اطلاعات کاربری خود را وارد کنید</p>
+        </div>
+
+        <form asp-controller="Login" asp-action="Index" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-warning mb-3 fw-bold small text-center"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Username" class="form-label fw-semibold"></label>
+                <input asp-for="Username" class="form-control form-control-lg bg-light border-0" placeholder="نام کاربری..." />
+                <span asp-validation-for="Username" class="text-warning small"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Password" class="form-label fw-semibold"></label>
+                <input asp-for="Password" class="form-control form-control-lg bg-light border-0" placeholder="رمز عبور..." />
+                <span asp-validation-for="Password" class="text-warning small"></span>
+            </div>
+
+            <div class="form-check mb-4">
+                <input class="form-check-input" asp-for="RememberMe" />
+                <label class="form-check-label text-light" asp-for="RememberMe">
+                    @Html.DisplayNameFor(m => m.RememberMe)
+                </label>
+            </div>
+
+            <div class="d-grid mt-2">
+                <button type="submit" class="btn btn-primary btn-lg py-3 shadow-sm rounded-pill fw-bold">ورود به سیستم</button>
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="text-light small mb-0">حساب کاربری ندارید؟ <a asp-controller="Register" asp-action="Index" class="text-info text-decoration-none fw-bold">ثبت نام کنید</a></p>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
