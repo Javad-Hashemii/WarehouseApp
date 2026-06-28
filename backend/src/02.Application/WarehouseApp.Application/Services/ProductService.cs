@@ -51,6 +51,20 @@ namespace WarehouseApp.Application.Services
         }
 
         //update method??
+
+        public async Task<ResultDto<bool>> AreProductsExist(List<int> productIds, CancellationToken ct)
+        {
+            bool allProductsExist = await productRepository.AllProductsExistsAsync(productIds, ct);
+            if (allProductsExist)
+            {
+                return ResultDto<bool>.Success("همه محصولات موجود هستند.", true);
+            }
+            else
+            {
+                return ResultDto<bool>.Failure("برخی از محصولات یافت نشدند.");
+            }
+        }
     }
 }
+
 
