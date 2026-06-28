@@ -5,7 +5,7 @@ using WarehouseApp.Domain.Core.Enums;
 
 namespace WarehouseApp.Domain.Core.Entities
 {
-    public class Request:BaseEntity //all entities have Id and we have base entity without id in it wtf XXXX Change the fluent api
+    public class Request:BaseEntity 
     {
 
         public string RequestNumber { get; set; } = null!;
