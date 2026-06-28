@@ -31,7 +31,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
             builder.Property(r => r.Status)
                 .IsRequired()
                 .HasConversion<int>()
-                .HasDefaultValue(RequestStatus.Pending);
+                .HasDefaultValue(RequestStatus.PendingWorkshop);
 
             builder.HasIndex(r => r.Status);
 
