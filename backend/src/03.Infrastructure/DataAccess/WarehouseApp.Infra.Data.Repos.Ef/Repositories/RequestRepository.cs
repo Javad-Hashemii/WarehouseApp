@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using WarehouseApp.Domain.Core.Contracts.Repository;
 using WarehouseApp.Domain.Core.Dtos.Request;
+using WarehouseApp.Domain.Core.Entities;
 using WarehouseApp.Domain.Core.Enums;
 using WarehouseApp.Infra.Db.SqlServer.Ef.DbContext;
 
@@ -13,14 +14,21 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
     {
         public async Task<bool> CreateRequestAsync(CreateRequestDto createRequestDto, CancellationToken ct)
         {
-            var request = new Domain.Core.Entities.Request
+
+            var request = new Request
             {
                 RequestNumber = createRequestDto.RequestNumber,
                 RequestedByUserId = createRequestDto.RequestedByUserId,
                 WorkshopId = createRequestDto.WorkshopId,
                 WarehouseId = createRequestDto.WarehouseId,
                 Status = createRequestDto.RequestedStatus, //was??!
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+
+                RequestItems = createRequestDto.Items.Select(itemDto => new RequestItem
+                {
+                    ProductId = itemDto.ProductId,
+                    QuantityRequested = itemDto.QuantityRequested
+                }).ToList()
             };
             _context.Requests.Add(request);
             return await _context.SaveChangesAsync(ct) > 0;
