@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WarehouseApp.Domain.Core.Dtos.RequestItem;
 using WarehouseApp.Domain.Core.Enums;
 
 namespace WarehouseApp.Domain.Core.Dtos.Request
@@ -12,5 +13,7 @@ namespace WarehouseApp.Domain.Core.Dtos.Request
         public int WorkshopId { get; set; }
         public int? WarehouseId { get; set; }
         public RequestStatus RequestedStatus { get; set; }
+
+        public List<CreateRequestItemsDto> Items { get; set; } = new();
     }
 }
