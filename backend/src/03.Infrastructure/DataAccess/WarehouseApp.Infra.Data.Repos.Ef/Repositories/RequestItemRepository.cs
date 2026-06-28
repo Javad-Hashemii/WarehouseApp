@@ -11,15 +11,13 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
 {
     public class RequestItemRepository(AppDbContext _context) : IRequestItemRepository
     {
-        public async Task<bool> CreateRequestItemAsync(CreateRequestItemsDto createRequestItemsDto, CancellationToken ct)
+        public async Task<bool> AddRequestItemAsync(AddRequestItemDto addRequestItemDto, CancellationToken ct)
         {
             var requestItem = new RequestItem
             {
-                RequestId = createRequestItemsDto.RequestId,
-                ProductId = createRequestItemsDto.ProductId,
-                QuantityRequested = createRequestItemsDto.QuantityRequested,
-                QuantityIssued = createRequestItemsDto.QuantityIssued,
-                Notes = createRequestItemsDto.Notes
+                RequestId = addRequestItemDto.RequestId,
+                ProductId = addRequestItemDto.ProductId,
+                QuantityRequested = addRequestItemDto.QuantityRequested,
             };  
             _context.RequestItems.Add(requestItem);
             return await _context.SaveChangesAsync(ct) > 0;
