@@ -9,19 +9,31 @@ using WarehouseApp.Domain.Core.Enums;
 
 namespace WarehouseApp.Application.Services
 {
-    public class RequestService(IRequestRepository requestRepository) : IRequestService
+    public class RequestService(IRequestRepository requestRepository,IProductService productService) : IRequestService
     {
         public async Task<ResultDto<bool>> CreateRequestAsync(CreateRequestDto createRequestDto, CancellationToken ct)
-        {
+        {   
+
+            if(createRequestDto == null||!createRequestDto.Items.Any())
+            {
+                return ResultDto<bool>.Failure("درخواست خالی است!");
+            }
+            var productsIds= createRequestDto.Items.Select(i => i.ProductId).ToList();
+            var productsCheckResult = await productService.AreProductsExist(productsIds, ct);
+
+            if(!productsCheckResult.IsSuccess)
+            {
+                return ResultDto<bool>.Failure("برخی از محصولات یافت نشدند.");
+            }
+            
             var result = await requestRepository.CreateRequestAsync(createRequestDto, ct);
-            if (result)
+            if (!result)
             {
-                return ResultDto<bool>.Success("درخواست با موفقیت اضافه شد", true);
+                return ResultDto<bool>.Failure("خطا در ایجاد درخواست");
             }
-            else
-            {
-                return ResultDto<bool>.Failure("خطا در ایجاد درخواست", false);
-            }
+
+            return ResultDto<bool>.Success("درخواست با موفقیت ایجاد شد", true);
+
         }
 
         public Task<bool> DeleteRequestAsync(int requestId, CancellationToken ct)
