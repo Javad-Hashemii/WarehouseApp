@@ -12,6 +12,8 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
         Task<List<GetAllProductsDto>>GetAllProductsAsync(CancellationToken ct);
         Task<GetProductDetailDto>GetProductDetailAsync(int productId,CancellationToken ct);
         Task<bool> IsProductExistAsync(string productName, CancellationToken ct);
+        Task<bool> AllProductsExistsAsync(List<int> productsIds, CancellationToken ct);
+
 
     }
 }
