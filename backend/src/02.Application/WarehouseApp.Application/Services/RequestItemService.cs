@@ -10,9 +10,9 @@ namespace WarehouseApp.Application.Services
 {
     public class RequestItemService(IRequestItemRepository requestItemRepository) : IRequestItemService
     {
-        public async Task<ResultDto<bool>> CreateRequestItemAsync(CreateRequestItemsDto createRequestItemsDto, CancellationToken ct)
+        public async Task<ResultDto<bool>> AddRequestItemAsync(AddRequestItemDto addRequestItemsDto, CancellationToken ct)
         {
-            var result = await requestItemRepository.CreateRequestItemAsync(createRequestItemsDto, ct);
+            var result = await requestItemRepository.AddRequestItemAsync(addRequestItemsDto, ct);
             if (result)
             {
                 return ResultDto<bool>.Success("ایتم درخواست با موفقیت اضافه شد", true);
