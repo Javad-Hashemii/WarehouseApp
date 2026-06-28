@@ -65,6 +65,13 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
         {
             return await _context.Products.AnyAsync(p => p.Name == productName, ct);
         }
+
+        public async Task<bool> AllProductsExistsAsync(List<int> productsIds, CancellationToken ct)
+        {
+            int existingCount = await _context.Products
+                .CountAsync(p => productsIds.Contains(p.Id), ct);
+            return existingCount == productsIds.Count;
+        }
     }
 }
 
