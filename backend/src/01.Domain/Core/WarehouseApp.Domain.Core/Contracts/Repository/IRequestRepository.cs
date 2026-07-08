@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WarehouseApp.Domain.Core.Dtos._common;
 using WarehouseApp.Domain.Core.Dtos.Request;
+using WarehouseApp.Domain.Core.Dtos.RequestItem;
 using WarehouseApp.Domain.Core.Entities;
 using WarehouseApp.Domain.Core.Enums;
 
@@ -24,6 +26,11 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
         Task<IEnumerable<GetAllRequestsDto>> GetSummariesByStatusAsync(RequestStatus status, CancellationToken ct);
 
         Task<GetRequestDto?> GetByIdWithDetailsAsync(int id, CancellationToken ct);
+
+        Task<List<RequestItem>> GetRequestItemsByIdsAsync(int requestId, IReadOnlyCollection<int> itemIds, CancellationToken ct);
+        Task AddRequestItemsAsync(IEnumerable<RequestItem> items, CancellationToken ct);
+        void RemoveRequestItems(IEnumerable<RequestItem> items);
+        Task<int> SaveChangesAsync(CancellationToken ct);
 
 
     }
