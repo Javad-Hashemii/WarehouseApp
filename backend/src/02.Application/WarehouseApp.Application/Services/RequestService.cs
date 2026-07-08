@@ -5,6 +5,8 @@ using WarehouseApp.Domain.Core.Contracts.Repository;
 using WarehouseApp.Domain.Core.Contracts.Service;
 using WarehouseApp.Domain.Core.Dtos._common;
 using WarehouseApp.Domain.Core.Dtos.Request;
+using WarehouseApp.Domain.Core.Dtos.RequestItem;
+using WarehouseApp.Domain.Core.Entities;
 using WarehouseApp.Domain.Core.Enums;
 
 namespace WarehouseApp.Application.Services
@@ -88,6 +90,62 @@ namespace WarehouseApp.Application.Services
             }
 
         }
+        public async Task<ResultDto<bool>> ModifyRequestItemsAsync(
+            int requestId,
+            IReadOnlyCollection<AddRequestItemDto> newItems,
+            IReadOnlyCollection<UpdateRequestItemDto> updatedItems,
+            IReadOnlyCollection<int> deletedItemIds,CancellationToken ct)
+        {
+            var updateIds = updatedItems.Select(x => x.Id).Distinct().ToList();
+            var deleteIds = deletedItemIds.Distinct().ToList();
+
+            if (updateIds.Intersect(deleteIds).Any())
+            {
+                return ResultDto<bool>.Failure("خطا: نمیتوان هم یک آیتم را آپدیت و همان آیتم را حذف کرد");
+            }
+
+            var affectedIds = updateIds.Concat(deleteIds).Distinct().ToList();
+
+            var existingItems = await requestRepository.GetRequestItemsByIdsAsync(requestId,affectedIds,ct);
+
+            var itemsById = existingItems.ToDictionary(x => x.Id);
+
+            if (affectedIds.Any(id => !itemsById.ContainsKey(id)))
+            {
+                return ResultDto<bool>.Failure("بعضی آیتم های انتخاب شده در این درخواست وجود ندارند");
+            }
+
+            foreach (var updateItem in updatedItems)
+            {
+                var entity = itemsById[updateItem.Id];
+
+                entity.ProductId = updateItem.ProductId;
+                entity.QuantityRequested = updateItem.QuantityRequested;
+            }
+
+            var itemsToDelete = deleteIds
+                .Select(id => itemsById[id])
+                .ToList();
+
+            requestRepository.RemoveRequestItems(itemsToDelete);
+
+            if (newItems.Count > 0)
+            {
+                var entities = newItems.Select(x => new RequestItem
+                {
+                    RequestId = requestId,
+                    ProductId = x.ProductId,
+                    QuantityRequested = x.QuantityRequested
+                });
+
+                await requestRepository.AddRequestItemsAsync(entities, ct);
+            }
+
+            await requestRepository.SaveChangesAsync(ct);
+
+            return ResultDto<bool>.Success("درخواست با موفقیت بروزرسانی شد", true);
+        }
+
     }
 }
     
