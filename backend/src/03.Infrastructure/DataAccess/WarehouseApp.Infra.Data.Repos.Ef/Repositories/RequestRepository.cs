@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using WarehouseApp.Domain.Core.Contracts.Repository;
+using WarehouseApp.Domain.Core.Dtos._common;
 using WarehouseApp.Domain.Core.Dtos.Request;
+using WarehouseApp.Domain.Core.Dtos.RequestItem;
 using WarehouseApp.Domain.Core.Entities;
 using WarehouseApp.Domain.Core.Enums;
 using WarehouseApp.Infra.Db.SqlServer.Ef.DbContext;
@@ -43,7 +45,7 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
         {
             return await _context.Requests
                 .AsNoTracking()
-                .Where(r=>r.Id == requestId)
+                .Where(r => r.Id == requestId)
                 .Select(r => new GetRequestDto
                 {
                     Id = r.Id,
@@ -118,7 +120,7 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                 .ExecuteUpdateAsync(setter => setter
                 .SetProperty(r => r.Status, updateStatusDto.NewStatus)
                 .SetProperty(r => r.UpdatedAt, DateTime.UtcNow)
-                .SetProperty(r => r.UpdatedByUserId, updateStatusDto.ChangedByUserId), ct); 
+                .SetProperty(r => r.UpdatedByUserId, updateStatusDto.ChangedByUserId), ct);
             return await result > 0;
 
         }
@@ -128,6 +130,29 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<List<RequestItem>> GetRequestItemsByIdsAsync(int requestId, IReadOnlyCollection<int> itemIds, CancellationToken ct)
+        {
+            return await _context.RequestItems
+                .Where(x => x.RequestId == requestId && itemIds.Contains(x.Id))
+                .ToListAsync(ct);
+        }
+        public async Task AddRequestItemsAsync(IEnumerable<RequestItem> items, CancellationToken ct)
+        {
+            await _context.RequestItems.AddRangeAsync(items, ct);
+        }
+        public void RemoveRequestItems(IEnumerable<RequestItem> items) //change the return value
+        {
+            _context.RequestItems.RemoveRange(items);
+        }
+
+
+        public async Task<int> SaveChangesAsync(CancellationToken ct)
+        {
+            return await _context.SaveChangesAsync(ct);
+        }
+
 
     }
 }
+
+
