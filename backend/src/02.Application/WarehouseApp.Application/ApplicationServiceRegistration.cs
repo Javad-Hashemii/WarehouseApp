@@ -24,7 +24,8 @@ namespace WarehouseApp.Application
             services.AddScoped<ISubCategoryService, SubCategoryService>();
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<IWarehouseService, WarehouseService>();
-            services.AddScoped<IWorkshopService, WorkShopService>();
+            services.AddScoped<IWorkshopService, WorkshopService>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IUserService, UserService>();
 
             return services;
