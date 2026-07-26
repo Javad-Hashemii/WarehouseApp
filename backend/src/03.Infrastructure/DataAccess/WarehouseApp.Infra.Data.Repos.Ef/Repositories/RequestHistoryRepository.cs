@@ -12,7 +12,7 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
 {
     public class RequestHistoryRepository(AppDbContext _context) : IRequestHistoryRepository
     {
-        public async Task<bool> CreateRequestHistoryAsync(CreateRequestHistoryDto createRequestHistoryDto, CancellationToken ct)
+        public async Task CreateRequestHistory(CreateRequestHistoryDto createRequestHistoryDto)
         {
             var requestHistory = new RequestHistory
             {
@@ -24,7 +24,6 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                 ChangedAt = DateTime.UtcNow
             };  
             _context.RequestHistories.Add(requestHistory);
-            return await _context.SaveChangesAsync(ct) > 0;
         }
 
         public async Task<List<GetAllRequestHistoriesDto>> GetAllRequestHistoriesAsync(CancellationToken ct)

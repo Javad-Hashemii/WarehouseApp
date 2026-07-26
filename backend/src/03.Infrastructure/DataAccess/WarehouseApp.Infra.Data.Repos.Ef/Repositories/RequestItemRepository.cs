@@ -34,6 +34,7 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                     ProductId = ri.ProductId,
                     QuantityRequested = ri.QuantityRequested,
                     QuantityIssued = ri.QuantityIssued,
+                    QuantityApproved=ri.QuantityApproved,
                     Notes = ri.Notes
                 })
                 .ToListAsync(ct);   
@@ -51,6 +52,7 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                     ProductId = ri.ProductId,
                     QuantityRequested = ri.QuantityRequested,
                     QuantityIssued = ri.QuantityIssued,
+                    QuantityApproved=ri.QuantityApproved,
                     Notes = ri.Notes
                 })
                 .ToListAsync(ct);
@@ -71,5 +73,18 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
             return await _context.Products.AnyAsync(ri => ri.Id == requestItemId, cancellationToken);
 
         }
+
+        public async Task<bool> SaveChangesAsync(CancellationToken ct)
+        {
+            return await _context.SaveChangesAsync(ct) > 0;
+        }
+
+        public async Task<List<RequestItem>> GetRequestItemsByIdsAsync(int requestId, List<int> ids, CancellationToken ct)
+        {
+            return await _context.RequestItems
+                .Where(ri => ri.RequestId == requestId && ids.Contains(ri.Id))
+                .ToListAsync(ct);
+        }
+
     }
 }

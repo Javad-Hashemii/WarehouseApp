@@ -49,5 +49,18 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
         {
             return await _context.SubCategories.AnyAsync(sc => sc.Name == categoryName, ct);
         }
+
+        public async Task<ICollection<GetAllSubCateogoriesDto>> GetAllSubCategoriesByCategoryId(int categoryId, CancellationToken ct)
+        {
+            return await _context.SubCategories
+                .Where(sc => sc.CategoryId == categoryId)
+                .Select(sc => new GetAllSubCateogoriesDto
+                {
+                    Id = sc.Id,
+                    Name = sc.Name,
+                    CategoryId = sc.CategoryId
+                })
+                .ToListAsync();
+        }
     }
 }

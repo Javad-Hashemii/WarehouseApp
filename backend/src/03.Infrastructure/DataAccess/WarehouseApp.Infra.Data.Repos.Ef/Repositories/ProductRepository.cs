@@ -34,10 +34,13 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                     Id = p.Id,
                     Name = p.Name,
                     CategoryId = p.CategoryId,
+                    CategoryName=p.Category.Name,
                     SubCategoryId = p.SubCategoryId,
+                    SubCategoryName = p.SubCategory!.Name,
                     Unit = p.Unit,
                     IsConsumable = p.IsConsumable
-                })
+                }
+                )
                 .ToListAsync(ct);
         }
 
@@ -66,11 +69,45 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
             return await _context.Products.AnyAsync(p => p.Name == productName, ct);
         }
 
+        public async Task<bool> IsProductExistByIdAsync(int productId, CancellationToken ct)
+        {
+            return await _context.Products.AnyAsync(p => p.Id == productId, ct);
+        }
+
         public async Task<bool> AllProductsExistsAsync(List<int> productsIds, CancellationToken ct)
         {
             int existingCount = await _context.Products
                 .CountAsync(p => productsIds.Contains(p.Id), ct);
             return existingCount == productsIds.Count;
+        }
+
+        public async Task<bool> UpdateProductAsync(UpdateProductDto updateProductDto, CancellationToken ct)
+        {
+            var result = await _context.Products
+                .Where(p => p.Id == updateProductDto.Id)
+                .ExecuteUpdateAsync(p => p
+                    .SetProperty(p => p.Name, updateProductDto.Name)
+                    .SetProperty(p => p.CategoryId, updateProductDto.CategoryId)
+                    .SetProperty(p => p.SubCategoryId, updateProductDto.SubCategoryId)
+                    .SetProperty(p => p.Unit, updateProductDto.Unit)
+                    .SetProperty(p => p.IsConsumable, updateProductDto.IsConsumable)
+                    .SetProperty(p=>p.UpdatedAt, DateTime.UtcNow)
+                    ,
+                    ct);
+            return result > 0;
+        }
+
+        public async Task<bool> SoftDeleteProductAsync(int productId,int deletedByUserId,CancellationToken ct)
+        {
+            int affectedRows = await _context.Products
+                .Where(p => p.Id == productId)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(p => p.IsDeleted, true)
+                    .SetProperty(p => p.DeletedAt, DateTime.UtcNow)
+                    .SetProperty(p => p.DeletedByUserId, deletedByUserId),
+                    ct);
+
+            return affectedRows > 0;
         }
     }
 }

@@ -22,14 +22,16 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                 RequestNumber = createRequestDto.RequestNumber,
                 RequestedByUserId = createRequestDto.RequestedByUserId,
                 WorkshopId = createRequestDto.WorkshopId,
-                WarehouseId = createRequestDto.WarehouseId,
-                Status = createRequestDto.RequestedStatus, //was??!
+                Status = RequestStatus.PendingWorkshop,
                 CreatedAt = DateTime.UtcNow,
+                CreatedByUserId = createRequestDto.RequestedByUserId,
 
                 RequestItems = createRequestDto.Items.Select(itemDto => new RequestItem
                 {
                     ProductId = itemDto.ProductId,
-                    QuantityRequested = itemDto.QuantityRequested
+                    QuantityRequested = itemDto.QuantityRequested,
+                    QuantityIssued=0,
+                    QuantityReceived = 0
                 }).ToList()
             };
             _context.Requests.Add(request);
@@ -54,12 +56,20 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                     WorkshopId = r.WorkshopId,
                     WarehouseId = r.WarehouseId,
                     Status = r.Status,
-                    CreatedAt = r.CreatedAt
+                    CreatedAt = r.CreatedAt,
+                    // Map the items here!
+                    Items = r.RequestItems.Select(i => new RequestItemDto
+                    {
+                        Id = i.Id,
+                        ProductId = i.ProductId,
+                        QuantityRequested = i.QuantityRequested,
+                        ProductName = i.Product.Name // If you have the navigation property setup
+                    }).ToList()
                 })
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(ct);
         }
 
-        public async Task<IEnumerable<GetAllRequestsDto>> GetSummariesByStatusAsync(RequestStatus status, CancellationToken ct)
+        public async Task<List<GetAllRequestsDto>> GetSummariesByStatusAsync(RequestStatus status, CancellationToken ct)
         {
             return await _context.Requests
                 .AsNoTracking()
@@ -70,7 +80,9 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                     RequestNumber = r.RequestNumber,
                     RequestedByUserId = r.RequestedByUserId,
                     WorkshopId = r.WorkshopId,
+                    WorkshopName = r.Workshop.Name,
                     WarehouseId = r.WarehouseId,
+                    WarehouseName = r.Warehouse.Name,
                     Status = r.Status,
                     CreatedAt = r.CreatedAt
                 })
@@ -120,14 +132,20 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                 .ExecuteUpdateAsync(setter => setter
                 .SetProperty(r => r.Status, updateStatusDto.NewStatus)
                 .SetProperty(r => r.UpdatedAt, DateTime.UtcNow)
-                .SetProperty(r => r.UpdatedByUserId, updateStatusDto.ChangedByUserId), ct);
+                .SetProperty(r => r.UpdatedByUserId, updateStatusDto.UpdatedByUserId), ct);
             return await result > 0;
 
         }
 
-        public Task<bool> UpdateStatusAsync(UpdateRequestStatusDto updateRequestStatusDto, CancellationToken ct, string? notes = null)
+        public async Task<bool> UpdateStatusAsync(UpdateRequestStatusDto updateRequestStatusDto, CancellationToken ct, string? notes = null)
         {
-            throw new NotImplementedException();
+            var result = await _context.Requests
+                .Where(r => r.Id == updateRequestStatusDto.RequestId)
+                .ExecuteUpdateAsync(setter => setter
+                .SetProperty(r => r.Status, updateRequestStatusDto.NewStatus)
+                .SetProperty(r => r.UpdatedAt, DateTime.UtcNow)
+                .SetProperty(r => r.UpdatedByUserId, updateRequestStatusDto.UpdatedByUserId), ct);
+            return result > 0;
         }
 
         public async Task<List<RequestItem>> GetRequestItemsByIdsAsync(int requestId, IReadOnlyCollection<int> itemIds, CancellationToken ct)
@@ -140,9 +158,9 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
         {
             await _context.RequestItems.AddRangeAsync(items, ct);
         }
-        public void RemoveRequestItems(IEnumerable<RequestItem> items) //change the return value
+        public void  RemoveRequestItems(IEnumerable<RequestItem> items) //change the return value
         {
-            _context.RequestItems.RemoveRange(items);
+             _context.RequestItems.RemoveRange(items);
         }
 
 
@@ -151,7 +169,33 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
             return await _context.SaveChangesAsync(ct);
         }
 
+        public async Task<bool>IsRequestNumberExistAsync(string requestNumber,CancellationToken ct)
+        {
+            return await _context.Requests.AnyAsync(r => r.RequestNumber == requestNumber);
+        }
 
+        public async Task<Request?> GetByIdAsync(int id, CancellationToken ct)
+        {
+            return await _context.Requests.FirstOrDefaultAsync(r => r.Id == id && !r.IsDeleted, ct);
+        }
+
+        public async Task<List<GetAllRequestsDto>> GetAllSummariesAsync(CancellationToken ct)
+        {
+            return await _context.Requests
+                .AsNoTracking()
+                .Where(r => !r.IsDeleted)
+                .Select(r => new GetAllRequestsDto
+                {
+                    Id = r.Id,
+                    RequestNumber = r.RequestNumber,
+                    RequestedByUserId = r.RequestedByUserId,
+                    WorkshopId = r.WorkshopId,
+                    WarehouseId = r.WarehouseId,
+                    Status = r.Status,
+                    CreatedAt = r.CreatedAt
+                })
+                .ToListAsync(ct);
+        }
     }
 }
 

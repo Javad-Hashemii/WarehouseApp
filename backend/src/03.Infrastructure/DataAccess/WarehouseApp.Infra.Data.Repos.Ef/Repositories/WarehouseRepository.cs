@@ -19,15 +19,23 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
             return await _context.SaveChangesAsync(ct) > 0;
         }
 
-        public Task<bool> DeleteWarehouseAsync(int warehouseId, CancellationToken ct) // implement soft delete?
+        public async Task<bool> DeleteWarehouseAsync(int warehouseId,int deletedByUserId, CancellationToken ct) // implement soft delete?
         {
-            throw new NotImplementedException();
+            var result = await _context.Warehouses
+                .Where(w => w.Id == warehouseId)
+                .ExecuteUpdateAsync(setter => setter
+                .SetProperty(w => w.IsDeleted, true)
+                .SetProperty(w=>w.DeletedAt,DateTime.UtcNow)
+                .SetProperty(w=>w.DeletedByUserId,deletedByUserId)
+                );
+            return result > 0;
         }
 
         public async Task<GetWarehouseDetailDto?> GetWarehouseDetailAsync(int warehouseId, CancellationToken ct) //check this
         {
             return await _context.Warehouses
                 .AsNoTracking()
+                .Where(w=>!w.IsDeleted)
                 .Select(w => new GetWarehouseDetailDto
                 {
                     Id = w.Id,
@@ -41,11 +49,13 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
         {
             return await _context.Warehouses
                 .AsNoTracking()
+                .Where(w=>!w.IsDeleted)
                 .Select(w => new GetAllWarehousesDto
                 {
                     Id = w.Id,
                     Name = w.Name,
                     CityId = w.CityId,
+                    CityName= w.City.Name
                 })
                 .ToListAsync(ct);
         }
@@ -62,7 +72,12 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
 
         public async Task<bool> IsWarehouseExistAsync(string warehouseName, CancellationToken ct)
         {
-            return await _context.Warehouses.AnyAsync(w => w.Name == warehouseName, ct);
+            return await _context.Warehouses.AnyAsync(w => w.Name == warehouseName && !w.IsDeleted, ct);
+        }
+
+        public async Task<bool> IsWarehouseExistById(int warehouseId, CancellationToken ct)
+        {
+            return await _context.Warehouses.AnyAsync(w=>w.Id==warehouseId && !w.IsDeleted, ct);
         }
     }
 }
