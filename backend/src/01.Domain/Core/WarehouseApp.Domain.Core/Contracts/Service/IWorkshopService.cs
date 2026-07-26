@@ -11,5 +11,10 @@ namespace WarehouseApp.Domain.Core.Contracts.Service
         Task<ResultDto<bool>> CreateWorkshopAsync(CreateWorkshopDto createWorkshopDto, CancellationToken ct);
         Task<ResultDto<bool>> UpdateWorkshopAsync(UpdateWorkshopDto updateWorkshopDto, CancellationToken ct);
         Task<List<GetAllWorkshopsDto>> GetWorkshopsAsync(CancellationToken ct);
+        Task<ResultDto<GetWorkshopDetailDto?>> GetWorkshopDetailAsync(int workshopId,CancellationToken ct);
+
+        Task<ResultDto<bool>> IsWorkshopExistByIdAsync(int workshopId,CancellationToken ct);
+
+        Task<ResultDto<bool>> SoftDeleteWorkshopAsync(int workshopId,int deletedByUserId,CancellationToken ct);
     }
 }
