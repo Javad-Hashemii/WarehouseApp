@@ -22,8 +22,17 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
                 .IsRequired()
                 .HasPrecision(18, 3);
 
+            builder.Property(ri => ri.QuantityApproved)
+                .HasPrecision(18, 3);
+
+            builder.Property(ri => ri.QuantityReceived)
+                .IsRequired()
+                .HasPrecision(18, 3);
+
             builder.Property(ri => ri.Notes)
                 .HasMaxLength(500);
+
+
 
             builder.HasOne(ri => ri.Request)
                 .WithMany(r => r.RequestItems)
