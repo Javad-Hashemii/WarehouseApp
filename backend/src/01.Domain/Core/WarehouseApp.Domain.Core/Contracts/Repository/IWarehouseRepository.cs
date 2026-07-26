@@ -11,8 +11,9 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
         Task<List<GetAllWarehousesDto>> GetWarehousesAsync(CancellationToken ct);
         Task<GetWarehouseDetailDto> GetWarehouseDetailAsync(int warehouseId, CancellationToken ct);
         Task<bool> UpdateWarehouseAsync(int warehouseId, string name, int cityId, CancellationToken ct);
-        Task<bool> DeleteWarehouseAsync(int warehouseId, CancellationToken ct);
+        Task<bool> DeleteWarehouseAsync(int warehouseId,int deletedByUserId, CancellationToken ct);
         Task<bool> IsWarehouseExistAsync(string warehouseName, CancellationToken ct);
+        Task<bool>IsWarehouseExistById(int warehouseId, CancellationToken ct);
 
     }
 }
