@@ -11,17 +11,19 @@ namespace WarehouseApp.Application.Services
 {
     public class RequestHistoryService(IRequestHistoryRepository requestHistoryRepository) : IRequestHistoryService
     {
-        public async Task<ResultDto<bool>> CreateRequestHistoryAsync(CreateRequestHistoryDto createRequestHistoryDto, CancellationToken ct)
+        public async void CreateRequestHistoryAsync(CreateRequestHistoryDto createRequestHistoryDto) //void???
         {
-            var result = await requestHistoryRepository.CreateRequestHistoryAsync(createRequestHistoryDto, ct);
-            if (result)
-            {
-                return ResultDto<bool>.Success("Request history created successfully.", true); //should it return a message?
-            }
-            else
-            {
-                return ResultDto<bool>.Failure("Failed to create request history.", false); //should it return a message?
-            }
+
+
+            var result =  requestHistoryRepository.CreateRequestHistory(createRequestHistoryDto);
+            //if (result)
+            //{
+            //    return ResultDto<bool>.Success("Request history created successfully."); //should it return a message?
+            //}
+            //else
+            //{
+            //    return ResultDto<bool>.Failure("Failed to create request history."); //should it return a message?
+            //}
         }
 
         public async Task<List<GetAllRequestHistoriesDto>> GetAllRequestHistoriesAsync(CancellationToken ct)
