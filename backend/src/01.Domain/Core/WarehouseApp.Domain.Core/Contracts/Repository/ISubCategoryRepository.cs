@@ -11,5 +11,6 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
         Task<bool> UpdateSubCategoryAsync(UpdateSubCategoryDto updateSubCategory, CancellationToken ct);
         Task<ICollection<GetAllSubCateogoriesDto>> GetAllSubCategoriesAsync(CancellationToken ct);
         Task<bool> IsSubCategoryExistAsync(string categoryName, CancellationToken ct);
+        Task<ICollection<GetAllSubCateogoriesDto>> GetAllSubCategoriesByCategoryId(int categoryId, CancellationToken ct);
     }
 }
