@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.OpenApi" Version="2.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\01.Domain\Core\WarehouseApp.Domain.Core\WarehouseApp.Domain.Core.csproj" />
   </ItemGroup>
 
