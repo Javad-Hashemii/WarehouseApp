@@ -11,5 +11,6 @@ namespace WarehouseApp.Domain.Core.Contracts.Service
         Task<ResultDto<bool>> AddRequestItemAsync(AddRequestItemDto addRequestItemsDto, CancellationToken ct);
         Task<List<GetAllRequestItems>> GetAllRequestItemsAsync(CancellationToken ct);
         Task<List<GetAllRequestItems>> GetAllRequestItemsByRequestIdAsync(int requestId, CancellationToken ct);
+        Task<ResultDto<bool>> ApproveRequestItemsAsync(int requestId,List<ApproveRequestItemDto> items,CancellationToken ct);
     }
 }
