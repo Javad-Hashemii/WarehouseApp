@@ -1,0 +1,152 @@
+﻿@model Warehouse.Mvc.Models.Product.EditProductViewModel
+
+@{
+    ViewData["Title"] = "ویرایش کالا";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-10">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 class="fw-bold mb-1">ویرایش کالا</h3>
+                    <p class="text-muted mb-0">
+                        اطلاعات کالا را ویرایش کنید.
+                    </p>
+                </div>
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-right ms-1"></i>
+                    بازگشت
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+
+                    <form asp-controller="Products"
+                          asp-action="Edit"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <input asp-for="Id" type="hidden" />
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger">
+                        </div>
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label asp-for="Name"
+                                       class="form-label">
+                                </label>
+
+                                <input asp-for="Name"
+                                       class="form-control" />
+
+                                <span asp-validation-for="Name"
+                                      class="text-danger">
+                                </span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Unit"
+                                       class="form-label">
+                                </label>
+
+                                <input asp-for="Unit"
+                                       class="form-control" />
+
+                                <span asp-validation-for="Unit"
+                                      class="text-danger">
+                                </span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="CategoryId"
+                                       class="form-label">
+                                </label>
+
+                                <select asp-for="CategoryId"
+                                        asp-items="Model.Categories"
+                                        class="form-select"
+                                        onchange="
+                                    this.form.action='@Url.Action("ReloadSubCategories", "Products")';
+                                    this.form.submit();
+                                    ">
+                                    <option value="">
+                                        انتخاب دسته‌بندی
+                                    </option>
+                                </select>
+
+                                <span asp-validation-for="CategoryId"
+                                      class="text-danger">
+                                </span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="SubCategoryId"
+                                       class="form-label">
+                                </label>
+
+                                <select asp-for="SubCategoryId"
+                                        asp-items="Model.SubCategories"
+                                        class="form-select">
+                                    <option value="">
+                                        بدون زیر‌دسته
+                                    </option>
+                                </select>
+
+                                <span asp-validation-for="SubCategoryId"
+                                      class="text-danger">
+                                </span>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-check form-switch">
+                                    <input asp-for="IsConsumable"
+                                           class="form-check-input" />
+
+                                    <label asp-for="IsConsumable"
+                                           class="form-check-label">
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+
+                            <a asp-controller="Products"
+                               asp-action="Index"
+                               class="btn btn-light">
+                                انصراف
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                <i class="bi bi-check-lg ms-1"></i>
+                                ذخیره تغییرات
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
