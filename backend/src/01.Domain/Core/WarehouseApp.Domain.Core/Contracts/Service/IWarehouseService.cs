@@ -12,6 +12,6 @@ namespace WarehouseApp.Domain.Core.Contracts.Service
         Task<List<GetAllWarehousesDto>> GetWarehousesAsync(CancellationToken ct);
         Task<GetWarehouseDetailDto> GetWarehouseDetailAsync(int warehouseId, CancellationToken ct);
         Task<ResultDto<bool>> UpdateWarehouseAsync(UpdateWarehouseDto updateWarehouseDto, CancellationToken ct);
-        Task<bool> DeleteWarehouseAsync(int warehouseId, CancellationToken ct);
+        Task<ResultDto<bool>> DeleteWarehouseAsync(int warehouseId,int deletedByUserId, CancellationToken ct);
     }
 }
