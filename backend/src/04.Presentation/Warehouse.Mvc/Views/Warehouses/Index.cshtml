@@ -1,0 +1,149 @@
+﻿@model List<WarehouseApp.Domain.Core.Dtos.Warehouse.GetAllWarehousesDto>
+@{
+    ViewData["Title"] = "مدیریت انبار ها";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">مدیریت انبارها</h3>
+            <p class="text-muted mb-0">
+                مشاهده، ایجاد، ویرایش و حذف انبارها
+            </p>
+        </div>
+
+        <a asp-controller="Warehouses"
+           asp-action="Create"
+           class="btn btn-primary">
+            <i class="bi bi-plus-lg ms-1"></i>
+            ایجاد انبار جدید
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle ms-1"></i>
+            @TempData["SuccessMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close">
+            </button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle ms-1"></i>
+            @TempData["ErrorMessage"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close">
+            </button>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">
+                    فهرست انبارها
+                </span>
+
+                <span class="badge bg-secondary">
+                    تعداد: @(Model?.Count ?? 0)
+                </span>
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+
+            @if (Model == null || Model.Count == 0)
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-box-seam fs-1 text-muted"></i>
+
+                    <p class="text-muted mt-3 mb-0">
+                        انباری ثبت نشده است.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>ردیف</th>
+                                <th>نام انبار</th>
+                                <th>شهر</th>
+                                <th class="text-center">عملیات</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @{
+                                int rowNumber = 1;
+                            }
+
+                            @foreach (var warehouse in Model)
+                            {
+                                <tr>
+                                    <td>@rowNumber</td>
+
+                                    <td class="fw-semibold">
+                                        @warehouse.Name
+                                    </td>
+
+                                    <td>
+                                        @warehouse.CityName
+                                    </td>
+
+                                    <td class="text-center">
+
+                                        <a asp-controller="Warehouses"
+                                           asp-action="Edit"
+                                           asp-route-id="@warehouse.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil-square"></i>
+                                            ویرایش
+                                        </a>
+
+                                        <form asp-controller="Warehouses"
+                                              asp-action="Delete"
+                                              asp-route-id="@warehouse.Id"
+                                              method="post"
+                                              class="d-inline"
+                                              onsubmit="return confirm('آیا از حذف این انبار اطمینان دارید؟');">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                                حذف
+                                            </button>
+                                        </form>
+
+                                    </td>
+                                </tr>
+
+                                rowNumber++;
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>

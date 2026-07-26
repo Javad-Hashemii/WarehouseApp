@@ -1,0 +1,65 @@
+﻿@model Warehouse.Mvc.Models.Warehouse.CreateWarehouseViewModel
+
+@{
+    ViewData["Title"] = "ایجاد انبار";
+}
+
+<form asp-controller="Warehouses"
+      asp-action="Create"
+      method="post">
+
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="ModelOnly"
+         class="alert alert-danger">
+    </div>
+    <div class="mb-3">
+
+        <label asp-for="Name"
+               class="form-label">
+        </label>
+
+        <input asp-for="Name"
+               class="form-control" />
+
+        <span asp-validation-for="Name"
+              class="text-danger">
+        </span>
+
+    </div>
+
+    <div class="mb-3">
+
+        <label asp-for="CityId"
+               class="form-label">
+        </label>
+
+        <select asp-for="CityId"
+                asp-items="Model.Cities"
+                class="form-select">
+
+            <option value="">
+                انتخاب شهر
+            </option>
+
+        </select>
+
+        <span asp-validation-for="CityId"
+              class="text-danger">
+        </span>
+
+    </div>  
+
+    <div class="d-flex gap-2">
+        <button type="submit"
+                class="btn btn-primary">
+            ایجاد انبار
+        </button>
+
+        <a asp-controller="Warehouses"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
+            انصراف
+        </a>
+    </div>
+    </form>
