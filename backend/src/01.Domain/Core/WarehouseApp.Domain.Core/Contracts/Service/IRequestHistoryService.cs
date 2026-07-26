@@ -9,7 +9,7 @@ namespace WarehouseApp.Domain.Core.Contracts.Service
 {
     public interface IRequestHistoryService
     {
-        Task<ResultDto<bool>>CreateRequestHistoryAsync(CreateRequestHistoryDto createRequestHistoryDto, CancellationToken ct);
+        void CreateRequestHistoryAsync(CreateRequestHistoryDto createRequestHistoryDto);
         Task<List<GetAllRequestHistoriesDto>> GetAllRequestHistoriesAsync(CancellationToken ct);
         Task<List<GetAllRequestHistoriesDto>> GetAllRequestHistoriesByRequestIdAsync(int requestId, CancellationToken ct);
 
