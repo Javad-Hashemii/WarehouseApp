@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.TagHelpers.Cache;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using WarehouseApp.Domain.Core.Dtos._common;
@@ -23,7 +24,7 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
 
         Task<IEnumerable<GetAllRequestsDto>> GetSummariesByWarehouseAsync(int warehouseId, CancellationToken ct);
 
-        Task<IEnumerable<GetAllRequestsDto>> GetSummariesByStatusAsync(RequestStatus status, CancellationToken ct);
+        Task<List<GetAllRequestsDto>> GetSummariesByStatusAsync(RequestStatus status, CancellationToken ct);
 
         Task<GetRequestDto?> GetByIdWithDetailsAsync(int id, CancellationToken ct);
 
@@ -31,6 +32,11 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
         Task AddRequestItemsAsync(IEnumerable<RequestItem> items, CancellationToken ct);
         void RemoveRequestItems(IEnumerable<RequestItem> items);
         Task<int> SaveChangesAsync(CancellationToken ct);
+        Task<bool> IsRequestNumberExistAsync(string requestNumber, CancellationToken ct);
+
+        Task<Request?> GetByIdAsync(int id, CancellationToken ct);
+        Task<List<GetAllRequestsDto>> GetAllSummariesAsync(CancellationToken ct);
+
 
 
     }
