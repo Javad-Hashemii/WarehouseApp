@@ -12,6 +12,9 @@ namespace WarehouseApp.Domain.Core.Contracts.Service
         Task<List<GetAllProductsDto>> GetAllProductsAsync(CancellationToken ct);
         Task<GetProductDetailDto> GetProductDetailAsync(int productId, CancellationToken ct);
         Task<ResultDto<bool>> AreProductsExist(List<int> productIds, CancellationToken ct);
+        Task<ResultDto<bool>> UpdateProductAsync(UpdateProductDto updateProductDto, CancellationToken ct);
+
+        Task<ResultDto<bool>> SoftDeleteProductAsync(int productId, int deletedByUserId, CancellationToken ct);
 
     }
 }
