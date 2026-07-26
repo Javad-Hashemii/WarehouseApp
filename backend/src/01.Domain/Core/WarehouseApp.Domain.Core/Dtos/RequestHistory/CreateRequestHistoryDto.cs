@@ -11,6 +11,7 @@ namespace WarehouseApp.Domain.Core.Dtos.RequestHistory
         public RequestStatus FromStatus { get; set; }
         public RequestStatus ToStatus { get; set; }
         public int ChangedByUserId { get; set; }
+        public DateTime TimeChanged { get; set; }
         public string? Notes { get; set; }
     }
 }
