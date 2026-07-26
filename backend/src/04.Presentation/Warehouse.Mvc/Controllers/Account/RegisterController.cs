@@ -13,14 +13,35 @@ namespace Warehouse.Mvc.Controllers.Account
         {
             return new List<SelectListItem>
     {
-        // The 'Value' must exactly match the Name in your UserRoleConfiguration
-        // The 'Text' is what the user actually sees in the Persian HTML dropdown
-        new SelectListItem { Value = "WarehouseManager", Text = "مدیر انبار" },
-        new SelectListItem { Value = "DepartmentHead", Text = "رئیس بخش" },
-        new SelectListItem { Value = "WorkshopSupervisor", Text = "سرپرست کارگاه" },
-        new SelectListItem { Value = "ProcurementOfficer", Text = "مسئول خرید (تدارکات)" }
-        
-        // Notice: Id = 1 (Admin) is strictly excluded to prevent privilege escalation!
+        new SelectListItem
+        {
+            Value = "WorkshopEmployee",
+            Text = "کارمند کارگاه"
+        },
+
+        new SelectListItem
+        {
+            Value = "WorkshopManager",
+            Text = "مدیر کارگاه"
+        },
+
+        new SelectListItem
+        {
+            Value = "WarehouseManager",
+            Text = "مدیر انبار"
+        },
+
+        new SelectListItem
+        {
+            Value = "CentralManager",
+            Text = "مدیر دفتر مرکزی"
+        },
+
+        new SelectListItem
+        {
+            Value = "ProcurementOfficer",
+            Text = "مسئول تدارکات"
+        }
     };
         }
 
