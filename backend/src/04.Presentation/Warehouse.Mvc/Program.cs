@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Warehouse.Mvc.Services;
 using WarehouseApp.Application;
 using WarehouseApp.Domain.Core.Configurations;
+using WarehouseApp.Domain.Core.Contracts.Service;
+using WarehouseApp.Domain.Core.Contracts.UnitOfWork;
 using WarehouseApp.Domain.Core.Entities;
 using WarehouseApp.Infra.Data.Repos.Ef;
+using WarehouseApp.Infra.Db.SqlServer.Ef;
 using WarehouseApp.Infra.Db.SqlServer.Ef.DbContext;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,10 +21,12 @@ var siteSettings = builder.Configuration
     .Get<SiteSettings>()
     ?? throw new InvalidOperationException("SiteSettings section not found");
 builder.Services.AddSingleton(siteSettings);
-
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
 builder.Services.AddApplicationServices();
 builder.Services.AddDataAccessEf(siteSettings);
-
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IRequestDraftService, RequestDraftService>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(
     options =>
     {
@@ -52,6 +58,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthentication();
+app.UseSession();
 app.UseAuthorization();
 
 app.MapStaticAssets();
