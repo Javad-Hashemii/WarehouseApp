@@ -52,6 +52,27 @@ namespace WarehouseApp.Application.Services
 
         //update method??
 
+        public async Task<ResultDto<bool>>UpdateProductAsync(UpdateProductDto updateProductDto, CancellationToken ct)
+        {
+            bool isProductExist = await productRepository.IsProductExistByIdAsync(updateProductDto.Id, ct);
+            if (!isProductExist)
+            {
+                return ResultDto<bool>.Failure("محصول مورد نظر یافت نشد.");
+            }
+            else
+            {
+                var result = await productRepository.UpdateProductAsync(updateProductDto, ct);
+                if (result)
+                {
+                    return ResultDto<bool>.Success("محصول با موفقیت بروزرسانی شد.", true);
+                }
+                else
+                {
+                    return ResultDto<bool>.Failure("خطا در بروزرسانی محصول.");
+                }
+            }
+        }
+
         public async Task<ResultDto<bool>> AreProductsExist(List<int> productIds, CancellationToken ct)
         {
             bool allProductsExist = await productRepository.AllProductsExistsAsync(productIds, ct);
@@ -63,6 +84,26 @@ namespace WarehouseApp.Application.Services
             {
                 return ResultDto<bool>.Failure("برخی از محصولات یافت نشدند.");
             }
+        }
+
+        public async Task<ResultDto<bool>> SoftDeleteProductAsync(int productId,int deletedByUserId,CancellationToken ct)
+        {
+            bool productExists = await productRepository
+                .IsProductExistByIdAsync(productId, ct);
+
+            if (!productExists)
+            {
+                return ResultDto<bool>.Failure("محصول مورد نظر یافت نشد.");
+            }
+
+            bool result = await productRepository.SoftDeleteProductAsync(productId,deletedByUserId,ct);
+
+            if (!result)
+            {
+                return ResultDto<bool>.Failure("خطا در حذف محصول.");
+            }
+
+            return ResultDto<bool>.Success( "محصول با موفقیت حذف شد.",true);
         }
     }
 }
