@@ -13,6 +13,10 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
         Task<GetProductDetailDto>GetProductDetailAsync(int productId,CancellationToken ct);
         Task<bool> IsProductExistAsync(string productName, CancellationToken ct);
         Task<bool> AllProductsExistsAsync(List<int> productsIds, CancellationToken ct);
+        Task<bool> IsProductExistByIdAsync(int productId, CancellationToken ct);
+        Task<bool> UpdateProductAsync(UpdateProductDto updateProductDto, CancellationToken ct);
+
+        Task<bool> SoftDeleteProductAsync(int productId, int deletedByUserId, CancellationToken ct);
 
 
     }
