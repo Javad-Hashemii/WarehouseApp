@@ -14,6 +14,9 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
 
             builder.HasKey(p => p.Id);
 
+            builder.HasQueryFilter(p => !p.IsDeleted);
+
+
             builder.Property(p => p.Name)
                 .IsRequired()
                 .HasMaxLength(300);
@@ -37,6 +40,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
                 .WithMany(sc => sc.Products)
                 .HasForeignKey(p => p.SubCategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+
 
             // Seed Data
             builder.HasData(
