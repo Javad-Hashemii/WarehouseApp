@@ -1,0 +1,51 @@
+﻿@model WarehouseApp.Domain.Core.Dtos.Request.GetRequestDto
+@{
+    ViewData["Title"] = "جزئیات درخواست";
+}
+
+<div class="container mt-4" dir="rtl">
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4>درخواست کارگاه: @Model.WorkshopId</h4>
+            <a asp-action="Index" class="btn btn-secondary btn-sm">بازگشت (Back)</a>
+        </div>
+        <div class="card-body row">
+            <div class="col-md-6">
+                <p><strong>شماره درخواست:</strong> @Model.RequestNumber</p>
+                <p><strong>تاریخ:</strong> @Model.CreatedAt.ToShortDateString()</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>وضعیت:</strong> @Model.Status.ToString()</p>
+                <p><strong>توضیحات:</strong> @Model.Notes</p>
+            </div>
+        </div>
+    </div>
+
+    <h5>اقلام درخواست</h5>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>شناسه محصول (Product ID)</th>
+                <th>تعداد (Quantity)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Items != null && Model.Items.Any())
+            {
+                foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.ProductId</td>
+                        <td>@item.QuantityRequested</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="2" class="text-center">هیچ آیتمی یافت نشد.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

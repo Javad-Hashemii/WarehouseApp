@@ -1,0 +1,167 @@
+﻿@model Warehouse.Mvc.Models.Request.CreateRequestViewModel
+
+@{
+    ViewData["Title"] = "ایجاد درخواست جدید";
+}
+
+<div class="container mt-4" dir="rtl">
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h4 class="mb-0">ایجاد درخواست جدید</h4>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-controller="Requests"
+                  asp-action="Create"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="alert alert-danger">
+                </div>
+
+
+                <!-- Request Number -->
+                <div class="mb-3">
+                    <label asp-for="RequestNumber"
+                           class="form-label">
+                        شماره درخواست
+                    </label>
+
+                    <input asp-for="RequestNumber"
+                           class="form-control"
+                           placeholder="شماره درخواست دستی را وارد کنید" />
+
+                    <span asp-validation-for="RequestNumber"
+                          class="text-danger">
+                    </span>
+                </div>
+
+
+                <!-- Workshop -->
+                <div class="mb-3">
+
+                    <label asp-for="WorkshopId"
+                           class="form-label">
+                        کارگاه
+                    </label>
+
+                    <select asp-for="WorkshopId"
+                            asp-items="Model.Workshops"
+                            class="form-select">
+
+                        <option value="">
+                            انتخاب کارگاه
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="WorkshopId"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- Items -->
+                <div class="mb-3">
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+
+                        <h5 class="mb-0">
+                            اقلام درخواست
+                        </h5>
+
+
+                        <a asp-controller="Requests"
+                           asp-action="AddItem"
+                           class="btn btn-success btn-sm">
+                            <i class="bi bi-plus-circle"></i>
+                            افزودن کالا
+                        </a>
+
+                    </div>
+
+
+                    <div class="table-responsive">
+
+                        <table class="table table-bordered table-hover">
+
+                            <thead>
+                                <tr>
+                                    <th>
+                                        نام کالا
+                                    </th>
+
+                                    <th>
+                                        واحد
+                                    </th>
+
+                                    <th>
+                                        مقدار
+                                    </th>
+
+                                    <th>
+                                        عملیات
+                                    </th>
+                                </tr>
+                            </thead>
+
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td colspan="4"
+                                        class="text-center text-muted">
+
+                                        هنوز کالایی اضافه نشده است
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <div class="d-flex gap-2">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        ثبت درخواست
+
+                    </button>
+
+
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary">
+
+                        انصراف
+
+                    </a>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
