@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WarehouseApp.Domain.Core.Dtos.RequestItem;
 using WarehouseApp.Domain.Core.Enums;
 
 namespace WarehouseApp.Domain.Core.Dtos.Request
@@ -16,5 +17,7 @@ namespace WarehouseApp.Domain.Core.Dtos.Request
         public string? Notes { get; set; }
 
         public DateTime CreatedAt { get; set; }
+
+        public List<RequestItemDto> Items { get; set; } = new();
     }
 }
