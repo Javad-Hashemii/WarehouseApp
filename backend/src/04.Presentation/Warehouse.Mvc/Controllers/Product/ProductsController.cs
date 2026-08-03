@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 using Warehouse.Mvc.Models.Product;
@@ -7,6 +8,7 @@ using WarehouseApp.Domain.Core.Dtos.Product;
 
 namespace Warehouse.Mvc.Controllers.Product
 {
+    [Authorize]
     public class ProductsController(IProductService productService,ICategoryService categoryService,ISubCategoryService subCategoryService) : Controller
     {
         [HttpGet]

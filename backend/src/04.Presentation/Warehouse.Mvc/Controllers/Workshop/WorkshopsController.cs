@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 using Warehouse.Mvc.Models.Workshop;
@@ -7,6 +8,7 @@ using WarehouseApp.Domain.Core.Dtos.Workshop;
 
 namespace Warehouse.Mvc.Controllers.Workshop
 {
+    [Authorize]
     public class WorkshopsController(IWorkshopService _workshopService, ICityService _cityService) : Controller
     {
         public async Task<IActionResult> Index(CancellationToken ct)

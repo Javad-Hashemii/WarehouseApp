@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 using Warehouse.Mvc.Models.Warehouse;
@@ -7,6 +8,7 @@ using WarehouseApp.Domain.Core.Dtos.Warehouse;
 
 namespace Warehouse.Mvc.Controllers.Warehouse
 {
+    [Authorize]
     public class WarehousesController(IWarehouseService _wareHouseService, ICityService _cityService) : Controller
     {
         [HttpGet]
