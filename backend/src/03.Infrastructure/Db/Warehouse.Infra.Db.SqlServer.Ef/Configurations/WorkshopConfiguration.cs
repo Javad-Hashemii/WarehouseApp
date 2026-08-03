@@ -19,20 +19,43 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
                 .IsRequired()
                 .HasMaxLength(200);
 
-            builder.HasIndex(w => new { w.Name, w.CityId })
-                .IsUnique();
+            builder.HasIndex(w => new
+            {
+                w.Name,
+                w.CityId
+            })
+            .IsUnique();
 
             builder.HasOne(w => w.City)
                 .WithMany(c => c.Workshops)
                 .HasForeignKey(w => w.CityId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Seed Data
             builder.HasData(
-                new Workshop { Id = 1, Name = "کارگاه ساختمانی شرق", CityId = 1 },
-                new Workshop { Id = 2, Name = "کارگاه تاسیسات مرکزی", CityId = 1 },
-                new Workshop { Id = 3, Name = "کارگاه برق و مکانیک", CityId = 2 },
-                new Workshop { Id = 4, Name = "کارگاه عمرانی جنوب", CityId = 3 }
+                new Workshop
+                {
+                    Id = 1,
+                    Name = "کارگاه ساختمانی شرق",
+                    CityId = 1
+                },
+                new Workshop
+                {
+                    Id = 2,
+                    Name = "کارگاه تاسیسات مرکزی",
+                    CityId = 1
+                },
+                new Workshop
+                {
+                    Id = 3,
+                    Name = "کارگاه برق و مکانیک",
+                    CityId = 2
+                },
+                new Workshop
+                {
+                    Id = 4,
+                    Name = "کارگاه عمرانی جنوب",
+                    CityId = 3
+                }
             );
         }
     }
