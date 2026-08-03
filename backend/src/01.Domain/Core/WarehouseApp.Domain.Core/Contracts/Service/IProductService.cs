@@ -16,5 +16,7 @@ namespace WarehouseApp.Domain.Core.Contracts.Service
 
         Task<ResultDto<bool>> SoftDeleteProductAsync(int productId, int deletedByUserId, CancellationToken ct);
 
+        Task<PaginatedResult<GetAllProductsDto>> SearchProductsAsync(string? search, int? categoryId, int? subCategoryId, int page, CancellationToken ct);
+
     }
 }
