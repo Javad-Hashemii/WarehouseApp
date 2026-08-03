@@ -1,10 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
+using WarehouseApp.Domain.Core.Dtos.Product;
 
 namespace Warehouse.Mvc.Models.Request
 {
     public class AddRequestItemViewModel
     {
+
+        [Display(Name = "جستجوی کالا")]
+        public string? Search { get; set; }
+
+
+        [Display(Name = "دسته‌بندی")]
+        public int? CategoryId { get; set; }
+
+
+        [Display(Name = "زیر دسته")]
+        public int? SubCategoryId { get; set; }
+
+
+        // Selected item
+
         [Range(1, int.MaxValue, ErrorMessage = "کالا را انتخاب کنید.")]
         [Display(Name = "کالا")]
         public int ProductId { get; set; }
@@ -16,6 +32,24 @@ namespace Warehouse.Mvc.Models.Request
         public decimal QuantityRequested { get; set; }
 
 
-        public List<SelectListItem> Products { get; set; } = new();
+        // Dropdowns
+
+        public List<SelectListItem> Categories { get; set; } = new();
+
+        public List<SelectListItem> SubCategories { get; set; } = new();
+
+
+        // Search result
+
+        public List<GetAllProductsDto> Products { get; set; } = new();
+
+
+        // Pagination
+
+        public int Page { get; set; } = 1;
+
+        public int? RequestId { get; set; }
+
+        public string ReturnTo { get; set; } = "Create";
     }
 }
