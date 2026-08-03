@@ -1,51 +1,220 @@
-﻿@model WarehouseApp.Domain.Core.Dtos.Request.GetRequestDto
+﻿@using WarehouseApp.Domain.Core.Consts
+@using WarehouseApp.Domain.Core.Enums
+@model WarehouseApp.Domain.Core.Dtos.Request.GetRequestDto
+
 @{
     ViewData["Title"] = "جزئیات درخواست";
+
+    var canApproveOrReject =
+        (User.IsInRole(Roles.WorkshopManager) &&
+         Model.Status == RequestStatus.PendingWorkshop)
+
+        ||
+
+        (User.IsInRole(Roles.WarehouseManager) &&
+         Model.Status == RequestStatus.PendingWarehouse)
+
+        ||
+
+        (User.IsInRole(Roles.CentralManager) &&
+         Model.Status == RequestStatus.PendingCentralOffice);
+
+    var canEdit =
+        (User.IsInRole(Roles.WorkshopEmployee) ||User.IsInRole(Roles.WorkshopManager)) && Model.Status == RequestStatus.PendingWorkshop || User.IsInRole(Roles.Admin) || User.IsInRole(Roles.CentralManager) && Model.Status== RequestStatus.PendingCentralOffice ;
 }
 
 <div class="container mt-4" dir="rtl">
-    <div class="card mb-4">
+
+    <div class="card mb-4 shadow-sm">
+
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h4>درخواست کارگاه: @Model.WorkshopId</h4>
-            <a asp-action="Index" class="btn btn-secondary btn-sm">بازگشت (Back)</a>
+
+            <h4 class="mb-0">
+                درخواست کارگاه: @Model.WorkshopName
+            </h4>
+
+            <a asp-action="Index"
+               class="btn btn-outline-secondary btn-sm">
+
+                <i class="bi bi-arrow-right"></i>
+                بازگشت
+
+            </a>
+
         </div>
-        <div class="card-body row">
-            <div class="col-md-6">
-                <p><strong>شماره درخواست:</strong> @Model.RequestNumber</p>
-                <p><strong>تاریخ:</strong> @Model.CreatedAt.ToShortDateString()</p>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <p>
+                        <strong>شماره درخواست:</strong>
+                        @Model.RequestNumber
+                    </p>
+
+                    <p>
+                        <strong>تاریخ:</strong>
+                        @Model.CreatedAt.ToShortDateString()
+                    </p>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <p>
+                        <strong>وضعیت:</strong>
+                        @Model.Status.ToString()
+                    </p>
+
+                    <p>
+                        <strong>توضیحات:</strong>
+
+                        @(string.IsNullOrWhiteSpace(Model.Notes)
+                            ? "بدون توضیحات"
+                            : Model.Notes)
+                    </p>
+
+                </div>
+
             </div>
-            <div class="col-md-6">
-                <p><strong>وضعیت:</strong> @Model.Status.ToString()</p>
-                <p><strong>توضیحات:</strong> @Model.Notes</p>
-            </div>
+
         </div>
+
     </div>
 
-    <h5>اقلام درخواست</h5>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>شناسه محصول (Product ID)</th>
-                <th>تعداد (Quantity)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model.Items != null && Model.Items.Any())
-            {
-                foreach (var item in Model.Items)
+
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+
+            <h5 class="mb-0">
+                اقلام درخواست
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover align-middle mb-0">
+
+                    <thead>
+                        <tr>
+                            <th>شناسه محصول</th>
+                            <th>نام محصول</th>
+                            <th>مقدار درخواست‌شده</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model.Items != null && Model.Items.Any())
+                        {
+                            foreach (var item in Model.Items)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @item.ProductId
+                                    </td>
+
+                                    <td>
+                                        @item.ProductName
+                                    </td>
+
+                                    <td>
+                                        @item.QuantityRequested
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="3"
+                                    class="text-center text-muted">
+
+                                    هیچ آیتمی یافت نشد.
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+
+                @if (canEdit)
                 {
-                    <tr>
-                        <td>@item.ProductId</td>
-                        <td>@item.QuantityRequested</td>
-                    </tr>
+                    <a asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-warning px-4">
+
+                        <i class="bi bi-pencil-square me-1"></i>
+                        تغییر درخواست
+
+                    </a>
                 }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="2" class="text-center">هیچ آیتمی یافت نشد.</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+
+                @if (canApproveOrReject)
+                {
+                    <form asp-action="Reject"
+                          method="post"
+                          class="d-inline">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden"
+                               name="id"
+                               value="@Model.Id" />
+
+                        <button type="submit"
+                                class="btn btn-danger px-4">
+
+                            <i class="bi bi-x-circle me-1"></i>
+                            رد درخواست
+
+                        </button>
+
+                    </form>
+
+
+                    <form asp-action="Approve"
+                          method="post"
+                          class="d-inline">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden"
+                               name="id"
+                               value="@Model.Id" />
+
+                        <button type="submit"
+                                class="btn btn-success px-4">
+
+                            <i class="bi bi-check-circle me-1"></i>
+                            تایید درخواست
+
+                        </button>
+
+                    </form>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
