@@ -20,6 +20,6 @@ namespace Warehouse.Mvc.Models.Request
         public List<SelectListItem> Workshops { get; set; } = new();
         public List<SelectListItem> Products { get; set; } = new();
 
-        public List<CreateRequestItemsDto> Items { get; set; } = new();
+        public List<CreateRequestItemViewModel> Items { get; set; } = new();
     }
 }
