@@ -22,6 +22,7 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                 RequestNumber = createRequestDto.RequestNumber,
                 RequestedByUserId = createRequestDto.RequestedByUserId,
                 WorkshopId = createRequestDto.WorkshopId,
+                WarehouseId = createRequestDto.WarehouseId,
                 Status = RequestStatus.PendingWorkshop,
                 CreatedAt = DateTime.UtcNow,
                 CreatedByUserId = createRequestDto.RequestedByUserId,
@@ -54,6 +55,7 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                     RequestNumber = r.RequestNumber,
                     RequestedByUserId = r.RequestedByUserId,
                     WorkshopId = r.WorkshopId,
+                    WorkshopName=r.Workshop.Name,
                     WarehouseId = r.WarehouseId,
                     Status = r.Status,
                     CreatedAt = r.CreatedAt,
@@ -63,7 +65,9 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                         Id = i.Id,
                         ProductId = i.ProductId,
                         QuantityRequested = i.QuantityRequested,
-                        ProductName = i.Product.Name // If you have the navigation property setup
+                        ProductName = i.Product.Name,
+                        Unit = i.Product.Unit
+                        // If you have the navigation property setup
                     }).ToList()
                 })
                 .FirstOrDefaultAsync(ct);
@@ -195,6 +199,11 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                     CreatedAt = r.CreatedAt
                 })
                 .ToListAsync(ct);
+        }
+
+        public async Task<bool> IsRequestIdExistAsync(int requestId, CancellationToken ct)
+        {
+            return await  _context.Requests.AnyAsync(r=>r.Id==requestId && !r.IsDeleted, ct);
         }
     }
 }
