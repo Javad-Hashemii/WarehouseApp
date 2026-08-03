@@ -22,11 +22,17 @@ var siteSettings = builder.Configuration
     ?? throw new InvalidOperationException("SiteSettings section not found");
 builder.Services.AddSingleton(siteSettings);
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+});
 builder.Services.AddApplicationServices();
 builder.Services.AddDataAccessEf(siteSettings);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IRequestDraftService, RequestDraftService>();
+builder.Services.AddScoped<IEditRequestDraftService, EditRequestDraftService>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(
     options =>
     {
