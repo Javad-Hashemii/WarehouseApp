@@ -11,8 +11,8 @@ namespace WarehouseApp.Domain.Core.Enums
         PendingCentralOffice,
         PendingProcurement,
         Fulfilled,
-        DeniedByDepartment,
-        DeniedByCentral,
+        RejectByWorkshopManager,
+        RejectByCentralOffice,
         Cancelled
     }
 }
