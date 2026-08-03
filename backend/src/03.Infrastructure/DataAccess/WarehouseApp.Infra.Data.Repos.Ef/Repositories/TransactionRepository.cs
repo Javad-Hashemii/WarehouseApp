@@ -15,7 +15,7 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
     {
         public async Task<bool> CreateInventoryTransactionAsync(CreateTransactionDto createTransactionDto, CancellationToken ct)
         {
-            var inventoryTransaction = new Transaction
+            var inventoryTransaction = new InventoryTransaction
             {
                 ProductId = createTransactionDto.ProductId,
                 Quantity = createTransactionDto.Quantity,
