@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WarehouseApp.Domain.Core.Dtos._common;
 using WarehouseApp.Domain.Core.Dtos.Product;
 using WarehouseApp.Domain.Core.Entities;
 
@@ -17,6 +18,8 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
         Task<bool> UpdateProductAsync(UpdateProductDto updateProductDto, CancellationToken ct);
 
         Task<bool> SoftDeleteProductAsync(int productId, int deletedByUserId, CancellationToken ct);
+
+        Task<PaginatedResult<GetAllProductsDto>>SearchProductsAsync(string? search,int page,int pageSize,int? categoryId,int? subCategoryId, CancellationToken ct);
 
 
     }
