@@ -18,25 +18,132 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
                 .IsRequired()
                 .HasPrecision(18, 3);
 
+            builder.Property(ib => ib.LastUpdatedAt)
+                .IsRequired();
+
             builder.HasOne(ib => ib.Product)
                 .WithMany()
                 .HasForeignKey(ib => ib.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(ib => ib.Warehouse)
-                .WithMany(w => w.InventoryBalances)
-                .HasForeignKey(ib => ib.WarehouseId)
+            builder.HasOne(ib => ib.StockLocation)
+                .WithMany(sl => sl.InventoryBalances)
+                .HasForeignKey(ib => ib.StockLocationId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
-            // changed: added Workshop relationship (nullable FK)
-            builder.HasOne(ib => ib.Workshop)
-                .WithMany(w => w.InventoryBalances)
-                .HasForeignKey(ib => ib.WorkshopId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasIndex(ib => new { ib.ProductId, ib.WarehouseId })
+            builder.HasIndex(ib => new
+            {
+                ib.StockLocationId,
+                ib.ProductId
+            })
                 .IsUnique();
+
+            builder.ToTable(table =>
+                table.HasCheckConstraint(
+                    "CK_InventoryBalance_Quantity_NonNegative",
+                    "[Quantity] >= 0"));
+
+            var seedDate = new DateTime(2026, 8, 3);
+
+            builder.HasData(
+                // Warehouse 1 - StockLocation 1
+                new InventoryBalance
+                {
+                    Id = 1,
+                    ProductId = 1,
+                    StockLocationId = 1,
+                    Quantity = 100m,
+                    LastUpdatedAt = seedDate,
+                    CreatedAt = seedDate,
+                    CreatedByUserId = 67,
+                    IsDeleted = false
+                },
+                new InventoryBalance
+                {
+                    Id = 2,
+                    ProductId = 11,
+                    StockLocationId = 1,
+                    Quantity = 500m,
+                    LastUpdatedAt = seedDate,
+                    CreatedAt = seedDate,
+                    CreatedByUserId = 67,
+                    IsDeleted = false
+                },
+
+                // Warehouse 2 - StockLocation 2
+                new InventoryBalance
+                {
+                    Id = 3,
+                    ProductId = 1,
+                    StockLocationId = 2,
+                    Quantity = 75m,
+                    LastUpdatedAt = seedDate,
+                    CreatedAt = seedDate,
+                    CreatedByUserId = 67,
+                    IsDeleted = false
+                },
+                new InventoryBalance
+                {
+                    Id = 4,
+                    ProductId = 11,
+                    StockLocationId = 2,
+                    Quantity = 300m,
+                    LastUpdatedAt = seedDate,
+                    CreatedAt = seedDate,
+                    CreatedByUserId = 67,
+                    IsDeleted = false
+                },
+
+                // Warehouse 3 - StockLocation 3
+                new InventoryBalance
+                {
+                    Id = 5,
+                    ProductId = 1,
+                    StockLocationId = 3,
+                    Quantity = 50m,
+                    LastUpdatedAt = seedDate,
+                    CreatedAt = seedDate,
+                    CreatedByUserId = 67,
+                    IsDeleted = false
+                },
+                new InventoryBalance
+                {
+                    Id = 6,
+                    ProductId = 11,
+                    StockLocationId = 3,
+                    Quantity = 200m,
+                    LastUpdatedAt = seedDate,
+                    CreatedAt = seedDate,
+                    CreatedByUserId = 67,
+                    IsDeleted = false
+                },
+
+                // Warehouse 4 - StockLocation 4
+                new InventoryBalance
+                {
+                    Id = 7,
+                    ProductId = 1,
+                    StockLocationId = 4,
+                    Quantity = 40m,
+                    LastUpdatedAt = seedDate,
+                    CreatedAt = seedDate,
+                    CreatedByUserId = 67,
+                    IsDeleted = false
+                },
+                new InventoryBalance
+                {
+                    Id = 8,
+                    ProductId = 11,
+                    StockLocationId = 4,
+                    Quantity = 150m,
+                    LastUpdatedAt = seedDate,
+                    CreatedAt = seedDate,
+                    CreatedByUserId = 67,
+                    IsDeleted = false
+                }
+            );
+
+
         }
     }
 }
