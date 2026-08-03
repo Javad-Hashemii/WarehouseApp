@@ -12,8 +12,11 @@ namespace WarehouseApp.Domain.Core.Entities
         public bool IsActive { get; set; }
         public DateTime? DeletedAt { get; set; }
 
-        public ICollection<Request> Requests { get; set; }
-        public ICollection<RequestHistory> RequestHistories { get; set; }
+        public int? WorkshopId { get; set; }
+        public Workshop? Workshop { get; set; }
+
+        public ICollection<Request> Requests { get; set; } = new List<Request>();
+        public ICollection<RequestHistory> RequestHistories { get; set; }= new List<RequestHistory>();
 
     }
 }
