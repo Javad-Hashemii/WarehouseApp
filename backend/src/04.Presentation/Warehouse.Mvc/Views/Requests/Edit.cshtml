@@ -1,0 +1,373 @@
+﻿@model Warehouse.Mvc.Models.Request.EditRequestViewModel
+
+@{
+    ViewData["Title"] = "ویرایش درخواست";
+}
+
+<div class="container py-4" dir="rtl">
+
+    <form asp-controller="Requests"
+          asp-action="Edit"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="RequestId" />
+
+        @for (var i = 0; i < Model.DeletedItemIds.Count; i++)
+        {
+            <input type="hidden"
+                   asp-for="DeletedItemIds[i]" />
+        }
+
+        <div class="card border-0 shadow-sm">
+
+            <!-- Header -->
+            <div class="card-header bg-white border-bottom py-3">
+
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+
+                    <div>
+                        <h4 class="mb-1 fw-bold">
+                            <i class="bi bi-pencil-square ms-2 text-primary"></i>
+                            ویرایش درخواست
+                        </h4>
+
+                        <div class="text-muted small">
+                            اطلاعات درخواست و اقلام موردنیاز را ویرایش کنید
+                        </div>
+                    </div>
+
+                    <a asp-action="Details"
+                       asp-route-id="@Model.RequestId"
+                       class="btn btn-outline-secondary">
+
+                        <i class="bi bi-arrow-right ms-1"></i>
+                        بازگشت به جزئیات
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="card-body p-4">
+
+                <!-- Validation -->
+                <div asp-validation-summary="ModelOnly"
+                     class="alert alert-danger">
+                </div>
+
+
+                <!-- Request Information -->
+                <div class="mb-4">
+
+                    <div class="d-flex align-items-center mb-3">
+
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle
+                            d-flex align-items-center justify-content-center ms-2"
+                             style="width: 38px; height: 38px;">
+
+                            <i class="bi bi-file-earmark-text"></i>
+
+                        </div>
+
+                        <div>
+                            <h5 class="mb-0 fw-bold">
+                                اطلاعات درخواست
+                            </h5>
+
+                            <small class="text-muted">
+                                مشخصات اصلی درخواست را وارد کنید
+                            </small>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+
+                            <label asp-for="RequestNumber"
+                                   class="form-label fw-semibold">
+
+                                شماره درخواست
+                            </label>
+
+                            <input asp-for="RequestNumber"
+                                   class="form-control"
+                                   placeholder="شماره درخواست را وارد کنید" />
+
+                            <span asp-validation-for="RequestNumber"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+
+                        <div class="col-md-6">
+
+                            <label asp-for="WorkshopId"
+                                   class="form-label fw-semibold">
+
+                                کارگاه
+                            </label>
+
+                            <select asp-for="WorkshopId"
+                                    asp-items="Model.Workshops"
+                                    class="form-select">
+
+                                <option value="">
+                                    کارگاه را انتخاب کنید
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="WorkshopId"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <hr class="my-4" />
+
+
+                <!-- Request Items -->
+                <div>
+
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+
+                        <div class="d-flex align-items-center">
+
+                            <div class="bg-success bg-opacity-10 text-success rounded-circle
+                                d-flex align-items-center justify-content-center ms-2"
+                                 style="width: 38px; height: 38px;">
+
+                                <i class="bi bi-box-seam"></i>
+
+                            </div>
+
+                            <div>
+                                <h5 class="mb-0 fw-bold">
+                                    اقلام درخواست
+                                </h5>
+
+                                <small class="text-muted">
+                                    مقدار اقلام را تغییر دهید، حذف کنید یا کالای جدید اضافه کنید
+                                </small>
+                            </div>
+
+                        </div>
+
+
+                        <a asp-controller="Requests"
+                           asp-action="AddItem"
+                           asp-route-requestId="@Model.RequestId"
+                           asp-route-returnTo="Edit"
+                           class="btn btn-success">
+
+                            <i class="bi bi-plus-circle ms-1"></i>
+                            افزودن کالا
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="table-responsive border rounded">
+
+                        <table class="table table-hover align-middle mb-0">
+
+                            <thead class="table-light">
+
+                                <tr>
+                                    <th class="text-center" style="width: 90px;">
+                                        ردیف
+                                    </th>
+
+                                    <th style="width: 120px;">
+                                        کد کالا
+                                    </th>
+
+                                    <th>
+                                        نام کالا
+                                    </th>
+
+                                    <th style="width: 140px;">
+                                        واحد
+                                    </th>
+
+                                    <th style="width: 210px;">
+                                        مقدار درخواست‌شده
+                                    </th>
+
+                                    <th class="text-center" style="width: 120px;">
+                                        عملیات
+                                    </th>
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                @if (Model.Items != null && Model.Items.Any())
+                                {
+                                    for (var i = 0; i < Model.Items.Count; i++)
+                                    {
+                                        <tr>
+
+                                            <td class="text-center text-muted">
+                                                @(i + 1)
+                                            </td>
+
+
+                                            <td>
+                                                <span class="badge bg-light text-dark border">
+                                                    @Model.Items[i].ProductId
+                                                </span>
+
+                                                <input type="hidden"
+                                                       asp-for="Items[i].Id" />
+
+                                                <input type="hidden"
+                                                       asp-for="Items[i].ProductId" />
+
+                                                <input type="hidden"
+                                                       asp-for="Items[i].ProductName" />
+
+                                                <input type="hidden"
+                                                       asp-for="Items[i].Unit" />
+
+                                            </td>
+
+
+                                            <td>
+                                                <div class="fw-semibold">
+                                                    @Model.Items[i].ProductName
+                                                </div>
+
+                                                @if (!Model.Items[i].Id.HasValue)
+                                                {
+                                                    <span class="badge bg-success-subtle text-success mt-1">
+                                                        کالای جدید
+                                                    </span>
+                                                }
+                                            </td>
+
+
+                                            <td>
+                                                @(string.IsNullOrWhiteSpace(Model.Items[i].Unit)
+                                                    ? "-"
+                                                    : Model.Items[i].Unit)
+                                            </td>
+
+
+                                            <td>
+
+                                                <input asp-for="Items[i].QuantityRequested"
+                                                       type="number"
+                                                       min="0.001"
+                                                       step="0.001"
+                                                       class="form-control"
+                                                       placeholder="مقدار" />
+
+                                                <span asp-validation-for="Items[i].QuantityRequested"
+                                                      class="text-danger small">
+                                                </span>
+
+                                            </td>
+
+
+                                            <td class="text-center">
+
+                                                <button type="submit"
+                                                        asp-controller="Requests"
+                                                        asp-action="RemoveEditItem"
+                                                        asp-route-requestId="@Model.RequestId"
+                                                        asp-route-productId="@Model.Items[i].ProductId" formnovalidate
+                                                        class="btn btn-outline-danger btn-sm">
+
+                                                    <i class="bi bi-trash3 ms-1"></i>
+                                                    حذف
+
+                                                </button>
+
+                                            </td>
+
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+
+                                        <td colspan="6"
+                                            class="text-center py-5">
+
+                                            <i class="bi bi-inbox d-block fs-1 text-muted mb-2"></i>
+
+                                            <div class="fw-semibold text-muted">
+                                                هیچ کالایی در این درخواست وجود ندارد
+                                            </div>
+
+                                            <small class="text-muted">
+                                                برای اضافه‌کردن کالا از دکمه «افزودن کالا» استفاده کنید
+                                            </small>
+
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Footer Actions -->
+                <div class="d-flex flex-wrap justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <button type="submit"
+                            asp-action="CancelEdit"
+                            asp-route-requestId="@Model.RequestId"
+                            formnovalidate
+                            class="btn btn-outline-secondary px-4">
+                        انصراف
+                    </button>
+
+
+                    <button type="submit"
+                            class="btn btn-primary px-4">
+
+                        <i class="bi bi-check-circle ms-1"></i>
+                        ذخیره تغییرات
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}
