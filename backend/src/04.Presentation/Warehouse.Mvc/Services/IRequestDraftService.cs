@@ -4,11 +4,11 @@ namespace Warehouse.Mvc.Services
 {
     public interface IRequestDraftService
     {
-        RequestDraft GetDraft();
+        CreateRequestDraft GetDraft();
 
-        void SaveDraft(RequestDraft draft);
+        void SaveDraft(CreateRequestDraft draft);
 
-        void AddItem(RequestDraftItem item);
+        void AddItem(CreateRequestDraftItem item);
 
         void RemoveItem(int productId);
 

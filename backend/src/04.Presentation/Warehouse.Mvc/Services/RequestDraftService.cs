@@ -10,7 +10,7 @@ namespace Warehouse.Mvc.Services
         private ISession Session =>
         httpContextAccessor.HttpContext!.Session;
 
-        public void AddItem(RequestDraftItem item)
+        public void AddItem(CreateRequestDraftItem item)
         {
             var draft = GetDraft();
 
@@ -24,17 +24,17 @@ namespace Warehouse.Mvc.Services
             Session.Remove(SessionKey);
         }
 
-        public RequestDraft GetDraft()
+        public CreateRequestDraft GetDraft()
         {
             var json = Session.GetString(SessionKey);
 
-            if (json == null)
+            if (string.IsNullOrWhiteSpace(json))
             {
-                return new RequestDraft();
+                return new CreateRequestDraft();
             }
 
-            return JsonSerializer.Deserialize<RequestDraft>(json)
-                   ?? new RequestDraft();
+            return JsonSerializer.Deserialize<CreateRequestDraft>(json)
+                   ?? new CreateRequestDraft();
         }
 
         public void RemoveItem(int productId)
@@ -52,7 +52,7 @@ namespace Warehouse.Mvc.Services
             SaveDraft(draft);
         }
 
-        public void SaveDraft(RequestDraft draft)
+        public void SaveDraft(CreateRequestDraft draft)
         {
             var json = JsonSerializer.Serialize(draft);
 
