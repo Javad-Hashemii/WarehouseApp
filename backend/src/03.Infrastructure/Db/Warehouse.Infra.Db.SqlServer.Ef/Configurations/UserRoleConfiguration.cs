@@ -7,7 +7,7 @@ using System.Text;
 
 namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
 {
-    public class UserRoleConfiguration : IEntityTypeConfiguration<IdentityRole<int>>
+    public class ApplicationRoleConfiguration : IEntityTypeConfiguration<IdentityRole<int>>
     {
         public void Configure(EntityTypeBuilder<IdentityRole<int>> builder)
         {
