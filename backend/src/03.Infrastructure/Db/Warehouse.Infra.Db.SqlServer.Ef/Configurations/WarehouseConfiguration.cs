@@ -11,34 +11,27 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
     {
         public void Configure(EntityTypeBuilder<Warehouse> builder)
         {
-
             builder.HasKey(w => w.Id);
 
             builder.Property(w => w.Name)
                 .IsRequired()
                 .HasMaxLength(200);
 
-            builder.HasIndex(w => new { w.Name, w.CityId })
-                .IsUnique();
+            builder.HasIndex(w => new
+            {
+                w.Name,
+                w.CityId
+            })
+            .IsUnique();
 
             builder.HasOne(w => w.City)
                 .WithMany(c => c.Warehouses)
                 .HasForeignKey(w => w.CityId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasMany(w => w.InventoryBalances)
-                .WithOne(ib => ib.Warehouse)
-                .HasForeignKey(ib => ib.WarehouseId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasMany(w => w.OutgoingTransactions)
-                .WithOne(t => t.SourceWarehouse)
-                .HasForeignKey(t => t.SourceWarehouseId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasMany(w => w.IncomingTransactions)
-                .WithOne(t => t.DestinationWarehouse)
-                .HasForeignKey(t => t.DestinationWarehouseId)
+            builder.HasOne(w => w.Workshop)
+                .WithOne(ws => ws.Warehouse)
+                .HasForeignKey<Warehouse>(w => w.WorkshopId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(w => w.Requests)
@@ -46,12 +39,35 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
                 .HasForeignKey(r => r.WarehouseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Seed Data
             builder.HasData(
-                new Warehouse { Id = 1, Name = "انبار مرکزی ماهشهر", CityId = 1 },
-                new Warehouse { Id = 2, Name = "انبار بهبهان", CityId = 1 },
-                new Warehouse { Id = 3, Name = "انبار اصفهان", CityId = 2 },
-                new Warehouse { Id = 4, Name = "انبار شیراز", CityId = 3 }
+                new Warehouse
+                {
+                    Id = 1,
+                    Name = "انبار مرکزی ماهشهر",
+                    CityId = 1,
+                    WorkshopId = 1
+                },
+                new Warehouse
+                {
+                    Id = 2,
+                    Name = "انبار بهبهان",
+                    CityId = 1,
+                    WorkshopId = 2
+                },
+                new Warehouse
+                {
+                    Id = 3,
+                    Name = "انبار اصفهان",
+                    CityId = 2,
+                    WorkshopId = 3
+                },
+                new Warehouse
+                {
+                    Id = 4,
+                    Name = "انبار شیراز",
+                    CityId = 3,
+                    WorkshopId = 4
+                }
             );
         }
     }
