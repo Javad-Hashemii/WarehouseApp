@@ -12,15 +12,15 @@ using WarehouseApp.Infra.Db.SqlServer.Ef.DbContext;
 namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260621074057_update-entities")]
-    partial class updateentities
+    [Migration("20260803082027_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.8")
+                .HasAnnotation("ProductVersion", "10.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -53,6 +53,50 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConcurrencyStamp = "c7b013f0-5201-4317-abd8-c211f91b7330",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ConcurrencyStamp = "033fa693-010e-436f-a602-e0f0dfc836e4",
+                            Name = "WarehouseManager",
+                            NormalizedName = "WAREHOUSEMANAGER"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ConcurrencyStamp = "5c52c6f6-49a3-4876-8805-5da845cce51c",
+                            Name = "WorkshopManager",
+                            NormalizedName = "WORKSHOPMANAGER"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ConcurrencyStamp = "81ba5de7-f4e7-4bd9-9fc4-8bdc87ccbf86",
+                            Name = "CentralManager",
+                            NormalizedName = "CENTRALMANAGER"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ConcurrencyStamp = "d11b22e1-4545-4b7d-b3b3-8551da7ebf54",
+                            Name = "ProcurementOfficer",
+                            NormalizedName = "PROCUREMENTOFFICER"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ConcurrencyStamp = "e1f3c8d2-5b6a-4f9e-9c3b-1f2e3d4c5b6a",
+                            Name = "WorkshopEmployee",
+                            NormalizedName = "WORKSHOPEMPLOYEE"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -137,6 +181,13 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 67,
+                            RoleId = 1
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -226,6 +277,9 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<int?>("WorkshopId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -236,7 +290,47 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("WorkshopId");
+
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "6f4b8a3d-9f21-4b12-889c-123456abcdef",
+                            Email = "omid@gmail.com",
+                            EmailConfirmed = false,
+                            FullName = "Omid Hashemi",
+                            IsActive = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "OMID@GMAIL.COM",
+                            NormalizedUserName = "OMID@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAENwIvr4Pn6t28/KI5Kh0/n+zAPGZGOKjq5iWt0sfzvdBRz/UaaiDbwNH2e5JbmDF0A==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "f3a9e8b2-1234-4bcd-9f2a-abcdef123456",
+                            TwoFactorEnabled = false,
+                            UserName = "omid@gmail.com"
+                        },
+                        new
+                        {
+                            Id = 67,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "6f4b8a3d-9f21-4b12-889c-123467abcdef",
+                            Email = "admin@gmail.com",
+                            EmailConfirmed = false,
+                            FullName = "Admin User",
+                            IsActive = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@GMAIL.COM",
+                            NormalizedUserName = "ADMIN@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAENwIvr4Pn6t28/KI5Kh0/n+zAPGZGOKjq5iWt0sfzvdBRz/UaaiDbwNH2e5JbmDF0A==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "f3a9e8b2-1234-4bcd-9f2a-abcdef123467",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@gmail.com"
+                        });
                 });
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Category", b =>
@@ -253,8 +347,17 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImagPath")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -279,6 +382,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             Id = 1,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "مصالح ساختمانی"
                         },
                         new
@@ -286,6 +390,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             Id = 2,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "ابزار و تجهیزات"
                         },
                         new
@@ -293,6 +398,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             Id = 3,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "تاسیسات برقی"
                         },
                         new
@@ -300,6 +406,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             Id = 4,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "تاسیسات مکانیکی"
                         },
                         new
@@ -307,6 +414,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             Id = 5,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "رنگ و پوشش"
                         },
                         new
@@ -314,6 +422,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             Id = 6,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "ایمنی و حفاظت فردی"
                         });
                 });
@@ -331,6 +440,15 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
 
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -356,6 +474,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             Id = 1,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "تهران"
                         },
                         new
@@ -363,6 +482,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             Id = 2,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "اصفهان"
                         },
                         new
@@ -370,6 +490,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             Id = 3,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "شیراز"
                         },
                         new
@@ -377,6 +498,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             Id = 4,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "مشهد"
                         },
                         new
@@ -384,6 +506,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             Id = 5,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "تبریز"
                         },
                         new
@@ -391,6 +514,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             Id = 6,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "اهواز"
                         });
                 });
@@ -409,6 +533,15 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -419,23 +552,118 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         .HasPrecision(18, 3)
                         .HasColumnType("decimal(18,3)");
 
+                    b.Property<int>("StockLocationId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("UpdatedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("WarehouseId")
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("StockLocationId", "ProductId")
+                        .IsUnique();
+
+                    b.ToTable("InventoryBalances", t =>
+                        {
+                            t.HasCheckConstraint("CK_InventoryBalance_Quantity_NonNegative", "[Quantity] >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.InventoryTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DestinationStockLocationId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("PerformedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Quantity")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("decimal(18,3)");
+
+                    b.Property<decimal?>("QuantityReceived")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("decimal(18,3)");
+
+                    b.Property<DateTime?>("ReceivedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("RequestId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SourceStockLocationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedByUserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("WarehouseId");
+                    b.HasIndex("DestinationStockLocationId");
 
-                    b.HasIndex("ProductId", "WarehouseId")
-                        .IsUnique();
+                    b.HasIndex("PerformedByUserId");
 
-                    b.ToTable("InventoryBalances");
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("RequestId");
+
+                    b.HasIndex("SourceStockLocationId");
+
+                    b.ToTable("InventoryTransactions", t =>
+                        {
+                            t.HasCheckConstraint("CK_InventoryTransaction_DifferentLocations", "[SourceStockLocationId] IS NULL\r\nOR [DestinationStockLocationId] IS NULL\r\nOR [SourceStockLocationId] <> [DestinationStockLocationId]");
+
+                            t.HasCheckConstraint("CK_InventoryTransaction_HasLocation", "[SourceStockLocationId] IS NOT NULL\r\nOR [DestinationStockLocationId] IS NOT NULL");
+
+                            t.HasCheckConstraint("CK_InventoryTransaction_QuantityReceived", "[QuantityReceived] IS NULL\r\nOR (\r\n    [QuantityReceived] >= 0\r\n    AND [QuantityReceived] <= [Quantity]\r\n)");
+
+                            t.HasCheckConstraint("CK_InventoryTransaction_Quantity_Positive", "[Quantity] > 0");
+                        });
                 });
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Product", b =>
@@ -455,10 +683,19 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsConsumable")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -497,6 +734,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = true,
+                            IsDeleted = false,
                             Name = "سیمان پرتلند تیپ 2",
                             SubCategoryId = 1,
                             Unit = "کیسه"
@@ -508,6 +746,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = true,
+                            IsDeleted = false,
                             Name = "ملات آماده",
                             SubCategoryId = 1,
                             Unit = "کیسه"
@@ -519,6 +758,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = true,
+                            IsDeleted = false,
                             Name = "آجر سفال 5 سانت",
                             SubCategoryId = 2,
                             Unit = "عدد"
@@ -530,6 +770,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = true,
+                            IsDeleted = false,
                             Name = "بلوک سبک 20 سانت",
                             SubCategoryId = 2,
                             Unit = "عدد"
@@ -541,6 +782,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = true,
+                            IsDeleted = false,
                             Name = "میلگرد آجدار A3 قطر 12",
                             SubCategoryId = 3,
                             Unit = "شاخه"
@@ -552,6 +794,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = true,
+                            IsDeleted = false,
                             Name = "تیرآهن 16",
                             SubCategoryId = 3,
                             Unit = "شاخه"
@@ -563,6 +806,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = false,
+                            IsDeleted = false,
                             Name = "چکش معمولی 500 گرم",
                             SubCategoryId = 5,
                             Unit = "عدد"
@@ -574,6 +818,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = false,
+                            IsDeleted = false,
                             Name = "انبردست 10 اینچ",
                             SubCategoryId = 5,
                             Unit = "عدد"
@@ -585,6 +830,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = false,
+                            IsDeleted = false,
                             Name = "دریل برقی بوش",
                             SubCategoryId = 6,
                             Unit = "دستگاه"
@@ -596,6 +842,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = false,
+                            IsDeleted = false,
                             Name = "فرز آهنبری",
                             SubCategoryId = 6,
                             Unit = "دستگاه"
@@ -607,6 +854,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = true,
+                            IsDeleted = false,
                             Name = "کابل افشان 1.5*2",
                             SubCategoryId = 8,
                             Unit = "متر"
@@ -618,6 +866,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = true,
+                            IsDeleted = false,
                             Name = "سیم برق 2.5",
                             SubCategoryId = 8,
                             Unit = "متر"
@@ -629,6 +878,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = true,
+                            IsDeleted = false,
                             Name = "لوله گالوانیزه 3/4 اینچ",
                             SubCategoryId = 11,
                             Unit = "شاخه"
@@ -640,6 +890,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = true,
+                            IsDeleted = false,
                             Name = "زانو PVC 1 اینچ",
                             SubCategoryId = 11,
                             Unit = "عدد"
@@ -651,6 +902,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = true,
+                            IsDeleted = false,
                             Name = "رنگ پلاستیک سفید",
                             SubCategoryId = 14,
                             Unit = "گالن"
@@ -662,6 +914,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = true,
+                            IsDeleted = false,
                             Name = "رنگ روغن",
                             SubCategoryId = 14,
                             Unit = "کیلوگرم"
@@ -673,6 +926,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = false,
+                            IsDeleted = false,
                             Name = "کلاه ایمنی استاندارد",
                             SubCategoryId = 17,
                             Unit = "عدد"
@@ -684,6 +938,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsConsumable = false,
+                            IsDeleted = false,
                             Name = "کفش ایمنی چرم",
                             SubCategoryId = 17,
                             Unit = "عدد"
@@ -703,6 +958,15 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
 
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(1000)
@@ -776,8 +1040,17 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
                     b.Property<int>("FromStatus")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
@@ -817,6 +1090,15 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Notes")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -824,7 +1106,15 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("QuantityApproved")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("decimal(18,3)");
+
                     b.Property<decimal>("QuantityIssued")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("decimal(18,3)");
+
+                    b.Property<decimal>("QuantityReceived")
                         .HasPrecision(18, 3)
                         .HasColumnType("decimal(18,3)");
 
@@ -851,6 +1141,123 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.ToTable("RequestItems");
                 });
 
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.StockLocation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WorkshopId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WarehouseId")
+                        .IsUnique()
+                        .HasFilter("[WarehouseId] IS NOT NULL");
+
+                    b.HasIndex("WorkshopId")
+                        .IsUnique()
+                        .HasFilter("[WorkshopId] IS NOT NULL");
+
+                    b.ToTable("StockLocations", t =>
+                        {
+                            t.HasCheckConstraint("CK_StockLocation_ExactlyOneOwner", "([WarehouseId] IS NOT NULL AND [WorkshopId] IS NULL)\r\nOR\r\n([WarehouseId] IS NULL AND [WorkshopId] IS NOT NULL)");
+                        });
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = 0,
+                            IsDeleted = false,
+                            WarehouseId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = 0,
+                            IsDeleted = false,
+                            WarehouseId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = 0,
+                            IsDeleted = false,
+                            WarehouseId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = 0,
+                            IsDeleted = false,
+                            WarehouseId = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = 0,
+                            IsDeleted = false,
+                            WorkshopId = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = 0,
+                            IsDeleted = false,
+                            WorkshopId = 2
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = 0,
+                            IsDeleted = false,
+                            WorkshopId = 3
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = 0,
+                            IsDeleted = false,
+                            WorkshopId = 4
+                        });
+                });
+
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.SubCategory", b =>
                 {
                     b.Property<int>("Id")
@@ -868,8 +1275,17 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -895,6 +1311,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 1,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "سیمان و ملات"
                         },
                         new
@@ -903,6 +1320,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 1,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "آجر و بلوک"
                         },
                         new
@@ -911,6 +1329,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 1,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "میلگرد و آهن آلات"
                         },
                         new
@@ -919,6 +1338,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 1,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "شن و ماسه"
                         },
                         new
@@ -927,6 +1347,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 2,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "ابزار دستی"
                         },
                         new
@@ -935,6 +1356,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 2,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "ابزار برقی"
                         },
                         new
@@ -943,6 +1365,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 2,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "داربست و نردبان"
                         },
                         new
@@ -951,6 +1374,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 3,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "کابل و سیم"
                         },
                         new
@@ -959,6 +1383,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 3,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "کلید و پریز"
                         },
                         new
@@ -967,6 +1392,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 3,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "تابلو برق"
                         },
                         new
@@ -975,6 +1401,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 4,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "لوله و اتصالات"
                         },
                         new
@@ -983,6 +1410,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 4,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "شیرآلات"
                         },
                         new
@@ -991,6 +1419,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 4,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "پمپ و الکتروپمپ"
                         },
                         new
@@ -999,6 +1428,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 5,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "رنگ ساختمانی"
                         },
                         new
@@ -1007,6 +1437,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 5,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "رنگ صنعتی"
                         },
                         new
@@ -1015,6 +1446,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 5,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "عایق‌های رطوبتی"
                         },
                         new
@@ -1023,6 +1455,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 6,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "کلاه ایمنی و کفش"
                         },
                         new
@@ -1031,6 +1464,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 6,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "دستکش و عینک"
                         },
                         new
@@ -1039,71 +1473,9 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CategoryId = 6,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "لباس کار"
                         });
-                });
-
-            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Transaction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Notes")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("PerformedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Quantity")
-                        .HasPrecision(18, 3)
-                        .HasColumnType("decimal(18,3)");
-
-                    b.Property<int?>("RequestId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("TransactionType")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedByUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PerformedByUserId");
-
-                    b.HasIndex("RequestId");
-
-                    b.HasIndex("TransactionDate");
-
-                    b.HasIndex("WarehouseId");
-
-                    b.HasIndex("ProductId", "WarehouseId", "TransactionDate");
-
-                    b.ToTable("InventoryTransactions");
                 });
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Warehouse", b =>
@@ -1123,6 +1495,15 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -1134,9 +1515,15 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Property<int?>("UpdatedByUserId")
                         .HasColumnType("int");
 
+                    b.Property<int>("WorkshopId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CityId");
+
+                    b.HasIndex("WorkshopId")
+                        .IsUnique();
 
                     b.HasIndex("Name", "CityId")
                         .IsUnique();
@@ -1150,7 +1537,9 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CityId = 1,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
-                            Name = "انبار مرکزی ماهشهر"
+                            IsDeleted = false,
+                            Name = "انبار مرکزی ماهشهر",
+                            WorkshopId = 1
                         },
                         new
                         {
@@ -1158,7 +1547,9 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CityId = 1,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
-                            Name = "انبار بهبهان"
+                            IsDeleted = false,
+                            Name = "انبار بهبهان",
+                            WorkshopId = 2
                         },
                         new
                         {
@@ -1166,7 +1557,9 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CityId = 2,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
-                            Name = "انبار اصفهان"
+                            IsDeleted = false,
+                            Name = "انبار اصفهان",
+                            WorkshopId = 3
                         },
                         new
                         {
@@ -1174,7 +1567,9 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CityId = 3,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
-                            Name = "انبار شیراز"
+                            IsDeleted = false,
+                            Name = "انبار شیراز",
+                            WorkshopId = 4
                         });
                 });
 
@@ -1194,6 +1589,15 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
 
                     b.Property<int>("CreatedByUserId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1222,6 +1626,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CityId = 1,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "کارگاه ساختمانی شرق"
                         },
                         new
@@ -1230,6 +1635,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CityId = 1,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "کارگاه تاسیسات مرکزی"
                         },
                         new
@@ -1238,6 +1644,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CityId = 2,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "کارگاه برق و مکانیک"
                         },
                         new
@@ -1246,6 +1653,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CityId = 3,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
+                            IsDeleted = false,
                             Name = "کارگاه عمرانی جنوب"
                         });
                 });
@@ -1301,6 +1709,16 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.ApplicationUser", b =>
+                {
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.Workshop", "Workshop")
+                        .WithMany("WorkshopUsers")
+                        .HasForeignKey("WorkshopId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Workshop");
+                });
+
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.InventoryBalance", b =>
                 {
                     b.HasOne("WarehouseApp.Domain.Core.Entities.Product", "Product")
@@ -1309,15 +1727,55 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("WarehouseApp.Domain.Core.Entities.Warehouse", "Warehouse")
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.StockLocation", "StockLocation")
                         .WithMany("InventoryBalances")
-                        .HasForeignKey("WarehouseId")
+                        .HasForeignKey("StockLocationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Product");
 
-                    b.Navigation("Warehouse");
+                    b.Navigation("StockLocation");
+                });
+
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.InventoryTransaction", b =>
+                {
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.StockLocation", "DestinationStockLocation")
+                        .WithMany("IncomingTransactions")
+                        .HasForeignKey("DestinationStockLocationId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.ApplicationUser", "PerformedByUser")
+                        .WithMany()
+                        .HasForeignKey("PerformedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.Request", "Request")
+                        .WithMany()
+                        .HasForeignKey("RequestId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.StockLocation", "SourceStockLocation")
+                        .WithMany("OutgoingTransactions")
+                        .HasForeignKey("SourceStockLocationId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("DestinationStockLocation");
+
+                    b.Navigation("PerformedByUser");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Request");
+
+                    b.Navigation("SourceStockLocation");
                 });
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Product", b =>
@@ -1402,6 +1860,23 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Navigation("Request");
                 });
 
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.StockLocation", b =>
+                {
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.Warehouse", "Warehouse")
+                        .WithOne("StockLocation")
+                        .HasForeignKey("WarehouseApp.Domain.Core.Entities.StockLocation", "WarehouseId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.Workshop", "Workshop")
+                        .WithOne("StockLocation")
+                        .HasForeignKey("WarehouseApp.Domain.Core.Entities.StockLocation", "WorkshopId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Warehouse");
+
+                    b.Navigation("Workshop");
+                });
+
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.SubCategory", b =>
                 {
                     b.HasOne("WarehouseApp.Domain.Core.Entities.Category", "Category")
@@ -1413,38 +1888,6 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Transaction", b =>
-                {
-                    b.HasOne("WarehouseApp.Domain.Core.Entities.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("PerformedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("WarehouseApp.Domain.Core.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("WarehouseApp.Domain.Core.Entities.Request", "Request")
-                        .WithMany()
-                        .HasForeignKey("RequestId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("WarehouseApp.Domain.Core.Entities.Warehouse", "Warehouse")
-                        .WithMany("InventoryTransactions")
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Request");
-
-                    b.Navigation("Warehouse");
-                });
-
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Warehouse", b =>
                 {
                     b.HasOne("WarehouseApp.Domain.Core.Entities.City", "City")
@@ -1453,7 +1896,15 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.Workshop", "Workshop")
+                        .WithOne("Warehouse")
+                        .HasForeignKey("WarehouseApp.Domain.Core.Entities.Warehouse", "WorkshopId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("City");
+
+                    b.Navigation("Workshop");
                 });
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Workshop", b =>
@@ -1495,6 +1946,15 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Navigation("RequestItems");
                 });
 
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.StockLocation", b =>
+                {
+                    b.Navigation("IncomingTransactions");
+
+                    b.Navigation("InventoryBalances");
+
+                    b.Navigation("OutgoingTransactions");
+                });
+
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.SubCategory", b =>
                 {
                     b.Navigation("Products");
@@ -1502,16 +1962,20 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Warehouse", b =>
                 {
-                    b.Navigation("InventoryBalances");
-
-                    b.Navigation("InventoryTransactions");
-
                     b.Navigation("Requests");
+
+                    b.Navigation("StockLocation");
                 });
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Workshop", b =>
                 {
                     b.Navigation("Requests");
+
+                    b.Navigation("StockLocation");
+
+                    b.Navigation("Warehouse");
+
+                    b.Navigation("WorkshopUsers");
                 });
 #pragma warning restore 612, 618
         }
