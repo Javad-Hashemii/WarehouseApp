@@ -24,12 +24,12 @@ namespace WarehouseApp.Domain.Core.Contracts.Service
 
         Task<IEnumerable<GetAllRequestsDto>> GetSummariesByStatusAsync(RequestStatus status,CancellationToken ct);
 
-        Task<GetRequestDto?> GetByIdWithDetailsAsync(int id, CancellationToken ct);
+        Task<ResultDto<GetRequestDto?>> GetByIdWithDetailsAsync(int id, CancellationToken ct);
         Task<ResultDto<bool>> ModifyRequestItemsAsync(int requestId, IReadOnlyCollection<AddRequestItemDto> newItems, IReadOnlyCollection<UpdateRequestItemDto> updatedItems, IReadOnlyCollection<int> deletedItemIds, CancellationToken ct);
         Task<ResultDto<List<GetAllRequestsDto>>> GetRequestsForCurrentUserAsync(CancellationToken ct);
         //Task<ResultDto<bool>> ApproveWorkshopRequestAsync(int requestId, int userId, CancellationToken ct);
         Task<ResultDto<bool>> ApproveRequestAsync(int requestId, CancellationToken ct);
-
+        Task<ResultDto<bool>> RejectRequestAsync(int requestId, CancellationToken ct);
 
 
 
