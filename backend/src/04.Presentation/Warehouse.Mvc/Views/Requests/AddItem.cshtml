@@ -1,0 +1,200 @@
+﻿@model Warehouse.Mvc.Models.Request.AddRequestItemViewModel
+
+@{
+    ViewData["Title"] = "افزودن کالا";
+}
+
+<div class="container mt-4" dir="rtl">
+
+    <h2 class="mb-4">افزودن کالا به درخواست</h2>
+
+    <!-- Search / Filter Form -->
+    <form asp-action="AddItem"
+          method="get"
+          class="card card-body shadow-sm mb-4">
+
+        <input type="hidden" asp-for="RequestId" />
+        <input type="hidden" asp-for="ReturnTo" />
+
+        <div class="mb-3">
+
+            <label asp-for="Search"
+                   class="form-label">
+            </label>
+
+            <input asp-for="Search"
+                   class="form-control"
+                   placeholder="جستجوی کالا..." />
+
+        </div>
+
+        <div class="mb-3">
+
+            <label asp-for="CategoryId"
+                   class="form-label">
+            </label>
+
+            <select asp-for="CategoryId"
+                    asp-items="Model.Categories"
+                    class="form-select">
+
+                <option value="">
+                    انتخاب دسته‌بندی
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="mb-3">
+
+            <label asp-for="SubCategoryId"
+                   class="form-label">
+            </label>
+
+            <select asp-for="SubCategoryId"
+                    asp-items="Model.SubCategories"
+                    class="form-select">
+
+                <option value="">
+                    انتخاب زیردسته
+                </option>
+
+            </select>
+
+        </div>
+
+        <input type="hidden" asp-for="Page" />
+
+        <div>
+            <button type="submit"
+                    class="btn btn-primary">
+
+                <i class="bi bi-search"></i>
+                جستجو
+
+            </button>
+        </div>
+
+    </form>
+
+    <!-- Products + Add Form -->
+    @if (Model.Products != null && Model.Products.Any())
+    {
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+                <h4 class="mb-0">لیست کالاها</h4>
+            </div>
+
+            <div class="card-body">
+
+                <form asp-action="AddItem"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" asp-for="RequestId" />
+                    <input type="hidden" asp-for="ReturnTo" />
+
+                    <div class="table-responsive">
+
+                        <table class="table table-bordered table-hover align-middle">
+
+                            <thead class="table-light">
+                                <tr>
+                                    <th>انتخاب</th>
+                                    <th>نام کالا</th>
+                                    <th>دسته‌بندی</th>
+                                    <th>زیردسته</th>
+                                    <th>واحد</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                @foreach (var product in Model.Products)
+                                {
+                                    <tr>
+
+                                        <td class="text-center">
+
+                                            <input type="radio"
+                                                   asp-for="ProductId"
+                                                   value="@product.Id" />
+
+                                        </td>
+
+                                        <td>
+                                            @product.Name
+                                        </td>
+
+                                        <td>
+                                            @product.CategoryName
+                                        </td>
+
+                                        <td>
+                                            @product.SubCategoryName
+                                        </td>
+
+                                        <td>
+                                            @product.Unit
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    <span asp-validation-for="ProductId"
+                          class="text-danger">
+                    </span>
+
+                    <div class="mb-3 mt-3">
+
+                        <label asp-for="QuantityRequested"
+                               class="form-label">
+                        </label>
+
+                        <input asp-for="QuantityRequested"
+                               class="form-control"
+                               type="number"
+                               min="0.001"
+                               step="0.001" />
+
+                        <span asp-validation-for="QuantityRequested"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-success">
+
+                        <i class="bi bi-plus-circle"></i>
+                        افزودن به درخواست
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            کالایی یافت نشد.
+        </div>
+    }
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
