@@ -14,6 +14,7 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
         Task<bool> DeleteWarehouseAsync(int warehouseId,int deletedByUserId, CancellationToken ct);
         Task<bool> IsWarehouseExistAsync(string warehouseName, CancellationToken ct);
         Task<bool>IsWarehouseExistById(int warehouseId, CancellationToken ct);
+        Task<int?> GetWarehouseIdByWorkshopId(int workshopId, CancellationToken ct);
 
     }
 }
