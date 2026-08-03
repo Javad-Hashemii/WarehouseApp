@@ -2,14 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using WarehouseApp.Domain.Core.Configurations;
 using WarehouseApp.Domain.Core.Contracts.Repository;
 using WarehouseApp.Domain.Core.Contracts.Service;
 using WarehouseApp.Domain.Core.Dtos._common;
 using WarehouseApp.Domain.Core.Dtos.Product;
+using WarehouseApp.Domain.Core.Entities;
 
 namespace WarehouseApp.Application.Services
 {
-    public class ProductService(IProductRepository productRepository) : IProductService
+    public class ProductService(IProductRepository productRepository,SiteSettings siteSettings) : IProductService
     {
         public async Task<ResultDto<bool>> CreateProductAsync(CreateProductDto createProductDto, CancellationToken ct)
         {
@@ -105,6 +107,31 @@ namespace WarehouseApp.Application.Services
 
             return ResultDto<bool>.Success( "محصول با موفقیت حذف شد.",true);
         }
+
+        public async Task<PaginatedResult<GetAllProductsDto>> SearchProductsAsync(string? search, int? categoryId, int? subCategoryId, int page, CancellationToken ct)
+        {
+            if (page <= 0)
+            {
+                page = 1;
+            }
+
+
+            var pageSize = siteSettings
+                .WarehouseConfigurations
+                .PaginationSettings
+                .ProductPageSize;
+
+
+            return await productRepository.SearchProductsAsync(
+                search,
+                page,
+                pageSize,
+                categoryId,
+                subCategoryId,
+                ct);
+        }
+
+
     }
 }
 
