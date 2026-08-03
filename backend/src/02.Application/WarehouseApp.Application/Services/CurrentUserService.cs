@@ -27,6 +27,18 @@ namespace WarehouseApp.Application.Services
                 return id;
             }
         }
+
+        public int? WorkshopId
+        {
+            get
+            {
+                var workshopIdClaim = User?.FindFirstValue("WorkshopId");
+
+                return int.TryParse(workshopIdClaim, out var workshopId)
+                    ? workshopId
+                    : null;
+            }
+        }
         public string? Role => User?.FindFirstValue(ClaimTypes.Role);
     }
 }
