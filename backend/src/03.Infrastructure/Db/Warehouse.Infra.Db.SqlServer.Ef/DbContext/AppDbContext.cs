@@ -13,7 +13,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.DbContext
         public DbSet<Category> Categories {  get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<InventoryBalance> InventoryBalances { get; set; }
-        public DbSet<Transaction> InventoryTransactions { get; set; }
+        public DbSet<InventoryTransaction> InventoryTransactions { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Request> Requests { get; set; }
         public DbSet<RequestItem> RequestItems { get; set; }
@@ -21,6 +21,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.DbContext
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Workshop> Workshops { get; set; }
         public DbSet<RequestHistory> RequestHistories { get; set; }
+        public DbSet<StockLocation> StockLocations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
