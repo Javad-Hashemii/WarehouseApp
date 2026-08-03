@@ -17,7 +17,6 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
             var inventory = new InventoryBalance
             {
                 ProductId = createInventoryDto.ProductId,
-                WarehouseId = createInventoryDto.WarehouseId,
                 Quantity = createInventoryDto.Quantity,
                 CreatedAt = DateTime.Now,
                 CreatedByUserId = createInventoryDto.UserId,
@@ -36,7 +35,6 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                     Id = ib.Id,
                     ProductId = ib.ProductId,
                     ProductName = ib.Product.Name,
-                    WarehouseId = ib.WarehouseId,
                     Quantity = ib.Quantity,
                     LastUpdatedAt = ib.UpdatedAt ?? ib.CreatedAt
                 })
@@ -47,13 +45,11 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
         {
             return await _context.InventoryBalances
                 .AsNoTracking()
-                .Where(w=>w.WarehouseId==warehouseId)
                 .Select(ib => new GetAllInventoryDto
                 {
                     Id = ib.Id,
                     ProductId = ib.ProductId,
                     ProductName = ib.Product.Name,
-                    WarehouseId = ib.WarehouseId,
                     Quantity = ib.Quantity,
                     LastUpdatedAt = ib.UpdatedAt ?? ib.CreatedAt
                 })
@@ -75,7 +71,7 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
 
         public async Task<bool> IsInventoryExistAsync(int productId,int warehouseId, CancellationToken ct)
         {
-            return await _context.InventoryBalances.AnyAsync(ib => ib.ProductId == productId && ib.WarehouseId == warehouseId, ct);
+            return await _context.InventoryBalances.AnyAsync(ib => ib.ProductId == productId, ct);
         }
     }
 }
