@@ -7,9 +7,9 @@ namespace WarehouseApp.Domain.Core.Enums
     public enum TransactionType
     {
 
-        StockIn = 1,
-        StockOut = 2,
-        AdjustmentIncrease = 3,
-        AdjustmentDecrease = 4
+        StockIn = 0,
+        StockOut = 1,
+        AdjustmentIncrease = 2,
+        AdjustmentDecrease = 3
     }
 }
