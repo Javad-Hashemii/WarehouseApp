@@ -93,6 +93,9 @@
                             <thead>
                                 <tr>
                                     <th>
+                                        کد کالا
+                                    </th>
+                                    <th>
                                         نام کالا
                                     </th>
 
@@ -113,16 +116,54 @@
 
                             <tbody>
 
-                                <tr>
+                                @if (Model.Items.Any())
+                                {
+                                    @foreach (var item in Model.Items)
+                                    {
+                                        <tr>
 
-                                    <td colspan="4"
-                                        class="text-center text-muted">
+                                            <td>
+                                                @item.ProductId
+                                            </td>
+                                            <td>
+                                                @item.ProductName
+                                            </td>
 
-                                        هنوز کالایی اضافه نشده است
+                                            <td>
+                                                @item.Unit
+                                            </td>
 
-                                    </td>
+                                            <td>
+                                                @item.Quantity
+                                            </td>
 
-                                </tr>
+                                            <td>
+                                                <button type="submit"
+                                                        asp-controller="Requests"
+                                                        asp-action="RemoveItem"
+                                                        asp-route-productId="@item.ProductId"
+                                                        formnovalidate
+                                                        class="btn btn-danger btn-sm">
+                                                    حذف
+                                                </button>
+                                            </td>
+
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+
+                                        <td colspan="4"
+                                            class="text-center text-muted">
+
+                                            هنوز کالایی اضافه نشده است
+
+                                        </td>
+
+                                    </tr>
+                                }
 
                             </tbody>
 
@@ -157,7 +198,7 @@
 
         </div>
 
-    </div>
+    </div>  
 
 </div>
 
