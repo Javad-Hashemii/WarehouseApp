@@ -79,5 +79,14 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
         {
             return await _context.Warehouses.AnyAsync(w=>w.Id==warehouseId && !w.IsDeleted, ct);
         }
+
+        public async Task<int?> GetWarehouseIdByWorkshopId(int workshopId, CancellationToken ct)
+        {
+            return await _context.Warehouses
+                .AsNoTracking()
+                .Where(w => w.WorkshopId == workshopId && !w.IsDeleted)
+                .Select(w => (int?)w.Id)
+                .SingleOrDefaultAsync(ct);
+        }
     }
 }
