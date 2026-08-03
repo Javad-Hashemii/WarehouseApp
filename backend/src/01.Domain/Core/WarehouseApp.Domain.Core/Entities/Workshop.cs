@@ -6,11 +6,19 @@ namespace WarehouseApp.Domain.Core.Entities
 {
     public class Workshop:BaseEntity
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
+
         public int CityId { get; set; }
-        public City City { get; set; }
+        public City City { get; set; } = null!;
+
+        public Warehouse? Warehouse { get; set; }
+
+        public StockLocation? StockLocation { get; set; }
 
         public ICollection<Request> Requests { get; set; }
-        public ICollection<InventoryBalance> InventoryBalances { get; set; }
+            = new List<Request>();
+
+        public ICollection<ApplicationUser> WorkshopUsers { get; set; }
+            = new List<ApplicationUser>();
     }
 }
