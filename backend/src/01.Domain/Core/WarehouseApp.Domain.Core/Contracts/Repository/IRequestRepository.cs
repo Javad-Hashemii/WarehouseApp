@@ -33,6 +33,8 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
         void RemoveRequestItems(IEnumerable<RequestItem> items);
         Task<int> SaveChangesAsync(CancellationToken ct);
         Task<bool> IsRequestNumberExistAsync(string requestNumber, CancellationToken ct);
+        Task<bool> IsRequestIdExistAsync(int requestId, CancellationToken ct);
+
 
         Task<Request?> GetByIdAsync(int id, CancellationToken ct);
         Task<List<GetAllRequestsDto>> GetAllSummariesAsync(CancellationToken ct);
