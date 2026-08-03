@@ -33,9 +33,17 @@ namespace WarehouseApp.Application.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Email),
+                
             };
 
-            var roles = await userManager.GetRolesAsync(user);
+            if (user.WorkshopId.HasValue)
+            {
+                claims.Add(
+                    new Claim("WorkshopId", user.WorkshopId.Value.ToString())
+                );
+            }
+
+                var roles = await userManager.GetRolesAsync(user);
             claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
             var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme);
