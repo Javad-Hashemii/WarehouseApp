@@ -2,14 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using WarehouseApp.Domain.Core.Configurations;
 using WarehouseApp.Domain.Core.Contracts.Repository;
+using WarehouseApp.Domain.Core.Dtos._common;
 using WarehouseApp.Domain.Core.Dtos.Product;
 using WarehouseApp.Domain.Core.Entities;
 using WarehouseApp.Infra.Db.SqlServer.Ef.DbContext;
 
 namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
 {
-    public class ProductRepository(AppDbContext _context) : IProductRepository
+    public class ProductRepository(AppDbContext _context,SiteSettings siteSettings) : IProductRepository
     {
         public async Task<bool> CreateProductAsync(CreateProductDto createProductDto, CancellationToken ct)
         {
@@ -108,6 +110,67 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                     ct);
 
             return affectedRows > 0;
+        }
+
+        public async Task<PaginatedResult<GetAllProductsDto>> SearchProductsAsync(string? search, int page, int pageSize, int? categoryId, int? subCategoryId, CancellationToken ct)
+        {
+            var query = _context.Products
+                .AsNoTracking()
+                .Where(p => !p.IsDeleted);
+
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(p =>
+                    p.Name.Contains(search));
+            }
+
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p =>
+                    p.CategoryId == categoryId.Value);
+            }
+
+
+            if (subCategoryId.HasValue)
+            {
+                query = query.Where(p =>
+                    p.SubCategoryId == subCategoryId.Value);
+            }
+
+
+            var totalCount = await query.CountAsync(ct);
+
+
+            var products = await query
+                .OrderBy(p => p.Name)
+
+                .Skip((page - 1) * pageSize)
+
+                .Take(pageSize)
+
+                .Select(p => new GetAllProductsDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Unit = p.Unit,
+                    CategoryName = p.Category.Name,
+                    SubCategoryName = p.SubCategory != null
+                        ? p.SubCategory.Name
+                        : null
+                })
+
+                .ToListAsync(ct);
+
+
+            return new PaginatedResult<GetAllProductsDto>
+            {
+                Items = products,
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalCount
+            };
         }
     }
 }
