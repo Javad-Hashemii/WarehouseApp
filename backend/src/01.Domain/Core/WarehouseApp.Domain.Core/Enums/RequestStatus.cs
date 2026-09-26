@@ -13,6 +13,9 @@ namespace WarehouseApp.Domain.Core.Enums
         Fulfilled,
         RejectByWorkshopManager,
         RejectByCentralOffice,
-        Cancelled
+        Cancelled,
+        PendingWorkshopReceipt,
+        PendingPurchaseDecision,
+        PendingPurchase
     }
 }
