@@ -1,0 +1,128 @@
+﻿@using WarehouseApp.Domain.Core.Consts
+@using WarehouseApp.Domain.Core.Enums
+@model IEnumerable<WarehouseApp.Domain.Core.Dtos.PurchaseRequest.GetAllPurchaseRequestsDto>
+
+@{
+    ViewData["Title"] = "درخواست‌های خرید";
+}
+
+<div class="container mt-4" dir="rtl">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>درخواست‌های خرید</h2>
+    </div>
+
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            درخواست خریدی برای نمایش وجود ندارد.
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped table-bordered align-middle">
+
+            <thead>
+                <tr>
+                    <th>شماره درخواست خرید</th>
+                    <th>شماره درخواست اصلی</th>
+                    <th>کارگاه</th>
+                    <th>تاریخ</th>
+                    <th>وضعیت</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+
+
+            <tbody>
+
+                @foreach (var req in Model)
+                {
+                    <tr>
+
+                        <td>
+                            @req.PurchaseRequestNumber
+                        </td>
+
+
+                        <td>
+                            @req.RequestId
+                        </td>
+
+
+                        <td>
+                            @req.WorkshopName
+                        </td>
+
+
+                        <td>
+                            @req.CreatedAt.ToShortDateString()
+                        </td>
+
+
+                        <td>
+                            @req.Status.ToString()
+                        </td>
+
+
+                        <td>
+
+                            @if (User.IsInRole(Roles.CentralManager) &&
+                                 req.Status == PurchaseRequestStatus.PendingCentralOffice)
+                            {
+                                <a asp-action="Details"
+                                   asp-route-id="@req.Id"
+                                   class="btn btn-primary btn-sm">
+
+                                    بررسی
+
+                                </a>
+                            }
+
+                            else if (User.IsInRole(Roles.ProcurementOfficer) &&
+                                     req.Status == PurchaseRequestStatus.PendingProcurement)
+                            {
+                                <a asp-action="ProcessPurchase"
+                                   asp-route-id="@req.Id"
+                                   class="btn btn-warning btn-sm">
+
+                                    بررسی خرید
+
+                                </a>
+                            }
+
+                            else if (User.IsInRole(Roles.WarehouseManager) &&
+                                     req.Status == PurchaseRequestStatus.PendingWarehouseReceipt)
+                            {
+                                <a asp-action="Receive"
+                                   asp-route-id="@req.Id"
+                                   class="btn btn-success btn-sm">
+
+                                    دریافت کالا
+
+                                </a>
+                            }
+
+                            else
+                            {
+                                <a asp-action="Details"
+                                   asp-route-id="@req.Id"
+                                   class="btn btn-info btn-sm">
+
+                                    مشاهده
+
+                                </a>
+                            }
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+    }
+
+</div>
