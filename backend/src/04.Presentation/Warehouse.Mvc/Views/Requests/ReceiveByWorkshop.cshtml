@@ -1,0 +1,112 @@
+﻿@model WarehouseApp.Domain.Core.Dtos.Request.GetRequestDto
+
+@{
+    ViewData["Title"] = "تایید دریافت اقلام";
+}
+
+<div class="container mt-4" dir="rtl">
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">تایید دریافت اقلام از انبار</h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row mb-4">
+                <div class="col-md-4 mb-2">
+                    <strong>شماره درخواست:</strong>
+                    <span>@Model.RequestNumber</span>
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    <strong>کارگاه:</strong>
+                    <span>@Model.WorkshopName</span>
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    <strong>تاریخ درخواست:</strong>
+                    <span>@Model.CreatedAt.ToString("yyyy/MM/dd")</span>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                مقدار واقعی دریافت‌شده از انبار را بررسی و در صورت نیاز اصلاح نمایید.
+            </div>
+
+            <form asp-action="ReceiveByWorkshop" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="RequestId" value="@Model.Id" />
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped align-middle text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>محصول</th>
+                                <th>واحد</th>
+                                <th>مقدار درخواست‌شده</th>
+                                <th>مقدار ارسال‌شده</th>
+                                <th>مقدار دریافت‌شده</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @for (var i = 0; i < Model.Items.Count; i++)
+                            {
+                                var item = Model.Items[i];
+
+                                <tr>
+                                    <td>@item.ProductName</td>
+
+                                    <td>@item.Unit</td>
+
+                                    <td>@item.QuantityRequested</td>
+
+                                    <td>
+                                        <span class="badge bg-primary fs-6">
+                                            @item.QuantityIssued
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <input type="hidden"
+                                               name="Items[@i].RequestItemId"
+                                               value="@item.Id" />
+
+                                        <input type="number"
+                                               name="Items[@i].QuantityReceived"
+                                               value="@item.QuantityIssued"
+                                               min="0"
+                                               max="@item.QuantityIssued"
+                                               step="0.001"
+                                               class="form-control text-center"
+                                               @(item.QuantityIssued == 0 ? "readonly" : "") />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="alert alert-warning mt-4">
+                    مقدار دریافت‌شده نمی‌تواند بیشتر از مقدار ارسال‌شده توسط انبار باشد.
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        بازگشت
+                    </a>
+
+                    <button type="submit" class="btn btn-success">
+                        تایید دریافت اقلام
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
