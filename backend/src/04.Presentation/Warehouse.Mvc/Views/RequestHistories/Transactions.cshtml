@@ -1,0 +1,101 @@
+﻿@using WarehouseApp.Domain.Core.Dtos.Transaction
+@using WarehouseApp.Domain.Core.Enums
+
+@model List<GetRequestTransactionDto>
+
+@{
+    ViewData["Title"] = "تراکنش‌های درخواست";
+    var requestId = (int)ViewBag.RequestId;
+}
+
+<div class="container mt-4" dir="rtl">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>تراکنش‌های درخواست</h3>
+
+        <a asp-controller="RequestHistories"
+           asp-action="Details"
+           asp-route-id="@requestId"
+           class="btn btn-secondary">
+            بازگشت
+        </a>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            هیچ تراکنشی برای این درخواست ثبت نشده است.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>کالا</th>
+                        <th>مبدا</th>
+                        <th>مقصد</th>
+                        <th>نوع تراکنش</th>
+                        <th>وضعیت</th>
+                        <th>مقدار</th>
+                        <th>مقدار دریافت‌شده</th>
+                        <th>تاریخ تراکنش</th>
+                        <th>تاریخ دریافت</th>
+                        <th>انجام‌دهنده</th>
+                        <th>توضیحات</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var transaction in Model)
+                    {
+                        <tr>
+                            <td>@transaction.ProductName</td>
+
+                            <td>
+                                @(transaction.SourceStockLocationName ?? "-")
+                            </td>
+
+                            <td>
+                                @(transaction.DestinationStockLocationName ?? "-")
+                            </td>
+
+                            <td>
+                                @transaction.TransactionType
+                            </td>
+
+                            <td>
+                                @transaction.Status
+                            </td>
+
+                            <td>
+                                @transaction.Quantity
+                            </td>
+
+                            <td>
+                                @(transaction.QuantityReceived?.ToString() ?? "-")
+                            </td>
+
+                            <td>
+                                @transaction.TransactionDate.ToString("yyyy/MM/dd HH:mm")
+                            </td>
+
+                            <td>
+                                @(transaction.ReceivedAt?.ToString("yyyy/MM/dd HH:mm") ?? "-")
+                            </td>
+
+                            <td>
+                                @(transaction.PerformedByUsername ?? "-")
+                            </td>
+
+                            <td>
+                                @(transaction.Notes ?? "-")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
