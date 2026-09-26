@@ -12,6 +12,7 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
         Task<List<GetAllRequestHistoriesDto>> GetAllRequestHistoriesAsync(CancellationToken ct);
         Task<List<GetAllRequestHistoriesDto>> GetAllRequestHistoriesByRequestIdAsync(int requestId, CancellationToken ct);
 
-
+        Task<List<GetRequestHistoryDetail>> GetRequestHistoryDetailsAsync(int requestId,CancellationToken ct);
+        Task<List<RequestTimelineItemDto>> GetRequestTimelineAsync(int requestId,CancellationToken ct);
     }
 }
