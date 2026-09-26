@@ -13,6 +13,11 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
         {
             builder.HasKey(sl => sl.Id);
 
+            builder.Property(sl => sl.Name)
+                .IsRequired()
+                .HasMaxLength(200);
+
+
             builder.HasOne(sl => sl.Warehouse)
                 .WithOne(w => w.StockLocation)
                 .HasForeignKey<StockLocation>(sl => sl.WarehouseId)
@@ -37,24 +42,28 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
                 new StockLocation
                 {
                     Id = 1,
+                    Name = "انبار مرکزی ماهشهر",
                     WarehouseId = 1,
                     WorkshopId = null
                 },
                 new StockLocation
                 {
                     Id = 2,
+                    Name = "انبار بهبهان",
                     WarehouseId = 2,
                     WorkshopId = null
                 },
                 new StockLocation
                 {
                     Id = 3,
+                    Name = "انبار اصفهان",
                     WarehouseId = 3,
                     WorkshopId = null
                 },
                 new StockLocation
                 {
                     Id = 4,
+                    Name = "انبار شیراز",
                     WarehouseId = 4,
                     WorkshopId = null
                 },
@@ -63,24 +72,28 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
                 new StockLocation
                 {
                     Id = 5,
+                    Name = "کارگاه ساختمانی شرق",
                     WarehouseId = null,
                     WorkshopId = 1
                 },
                 new StockLocation
                 {
                     Id = 6,
+                    Name = "کارگاه تاسیسات مرکزی",
                     WarehouseId = null,
                     WorkshopId = 2
                 },
                 new StockLocation
                 {
                     Id = 7,
+                    Name = "کارگاه برق و مکانیک",
                     WarehouseId = null,
                     WorkshopId = 3
                 },
                 new StockLocation
                 {
                     Id = 8,
+                    Name = "کارگاه عمرانی جنوب",
                     WarehouseId = null,
                     WorkshopId = 4
                 }
