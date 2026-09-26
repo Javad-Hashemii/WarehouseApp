@@ -14,7 +14,7 @@ namespace WarehouseApp.Domain.Core.Entities
         public int? DestinationStockLocationId { get; set; }
 
         public TransactionType TransactionType { get; set; }
-        public TransactionStatus Status { get; set; }
+        public InventoryTransactionStatus Status { get; set; }
 
         public decimal Quantity { get; set; }
         public decimal? QuantityReceived { get; set; }
@@ -23,6 +23,8 @@ namespace WarehouseApp.Domain.Core.Entities
         public DateTime? ReceivedAt { get; set; }
 
         public int? RequestId { get; set; }
+        public int? RequestItemId { get; set; }
+
         public int PerformedByUserId { get; set; }
         public ApplicationUser PerformedByUser { get; set; } = null!;
 
@@ -34,5 +36,7 @@ namespace WarehouseApp.Domain.Core.Entities
         public StockLocation? DestinationStockLocation { get; set; }
 
         public Request? Request { get; set; }
+        public RequestItem? RequestItem { get; set; }
+
     }
 }
