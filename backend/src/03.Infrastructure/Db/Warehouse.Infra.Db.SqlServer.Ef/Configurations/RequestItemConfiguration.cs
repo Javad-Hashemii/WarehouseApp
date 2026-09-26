@@ -39,6 +39,8 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
                 .HasForeignKey(ri => ri.RequestId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+
+
             builder.HasOne(ri => ri.Product)
                 .WithMany()
                 .HasForeignKey(ri => ri.ProductId)
