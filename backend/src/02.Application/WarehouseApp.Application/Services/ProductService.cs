@@ -108,19 +108,17 @@ namespace WarehouseApp.Application.Services
             return ResultDto<bool>.Success( "محصول با موفقیت حذف شد.",true);
         }
 
-        public async Task<PaginatedResult<GetAllProductsDto>> SearchProductsAsync(string? search, int? categoryId, int? subCategoryId, int page, CancellationToken ct)
+        public async Task<PaginatedResult<GetAllProductsDto>> SearchProductsAsync(
+            string? search,
+            int? categoryId,
+            int? subCategoryId,
+            int page,
+            CancellationToken ct)
         {
-            if (page <= 0)
-            {
-                page = 1;
-            }
-
-
             var pageSize = siteSettings
                 .WarehouseConfigurations
                 .PaginationSettings
                 .ProductPageSize;
-
 
             return await productRepository.SearchProductsAsync(
                 search,
@@ -130,7 +128,6 @@ namespace WarehouseApp.Application.Services
                 subCategoryId,
                 ct);
         }
-
 
     }
 }
