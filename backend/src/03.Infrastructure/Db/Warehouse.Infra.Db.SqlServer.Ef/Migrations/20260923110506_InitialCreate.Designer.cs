@@ -12,8 +12,8 @@ using WarehouseApp.Infra.Db.SqlServer.Ef.DbContext;
 namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260803084654_SeedWarehouseInventory")]
-    partial class SeedWarehouseInventory
+    [Migration("20260923110506_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -714,6 +714,9 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Property<int?>("RequestId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("RequestItemId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("SourceStockLocationId")
                         .HasColumnType("int");
 
@@ -741,6 +744,8 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.HasIndex("ProductId");
 
                     b.HasIndex("RequestId");
+
+                    b.HasIndex("RequestItemId");
 
                     b.HasIndex("SourceStockLocationId");
 
@@ -1035,6 +1040,202 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         });
                 });
 
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.PurchaseRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ExpectedDeliveryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PurchaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PurchaseRequestNumber")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("RequestId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Supplier")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkshopId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RequestId")
+                        .IsUnique();
+
+                    b.HasIndex("WorkshopId");
+
+                    b.ToTable("PurchaseRequests");
+                });
+
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.PurchaseRequestHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ChangedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FromStatus")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("PurchaseRequestId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ToStatus")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedByUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChangedByUserId");
+
+                    b.HasIndex("PurchaseRequestId");
+
+                    b.ToTable("PurchaseRequestHistories");
+                });
+
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.PurchaseRequestItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PurchaseRequestId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("QuantityApproved")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 3)
+                        .HasColumnType("decimal(18,3)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<decimal>("QuantityPurchased")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 3)
+                        .HasColumnType("decimal(18,3)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<decimal>("QuantityReceived")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 3)
+                        .HasColumnType("decimal(18,3)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<decimal>("QuantityRequested")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("decimal(18,3)");
+
+                    b.Property<int?>("RequestItemId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedByUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("PurchaseRequestId");
+
+                    b.HasIndex("RequestItemId");
+
+                    b.ToTable("PurchaseRequestItems");
+                });
+
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Request", b =>
                 {
                     b.Property<int>("Id")
@@ -1254,6 +1455,11 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -1288,6 +1494,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsDeleted = false,
+                            Name = "انبار مرکزی ماهشهر",
                             WarehouseId = 1
                         },
                         new
@@ -1296,6 +1503,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsDeleted = false,
+                            Name = "انبار بهبهان",
                             WarehouseId = 2
                         },
                         new
@@ -1304,6 +1512,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsDeleted = false,
+                            Name = "انبار اصفهان",
                             WarehouseId = 3
                         },
                         new
@@ -1312,6 +1521,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsDeleted = false,
+                            Name = "انبار شیراز",
                             WarehouseId = 4
                         },
                         new
@@ -1320,6 +1530,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsDeleted = false,
+                            Name = "کارگاه ساختمانی شرق",
                             WorkshopId = 1
                         },
                         new
@@ -1328,6 +1539,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsDeleted = false,
+                            Name = "کارگاه تاسیسات مرکزی",
                             WorkshopId = 2
                         },
                         new
@@ -1336,6 +1548,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsDeleted = false,
+                            Name = "کارگاه برق و مکانیک",
                             WorkshopId = 3
                         },
                         new
@@ -1344,6 +1557,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedByUserId = 0,
                             IsDeleted = false,
+                            Name = "کارگاه عمرانی جنوب",
                             WorkshopId = 4
                         });
                 });
@@ -1852,6 +2066,11 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         .HasForeignKey("RequestId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.RequestItem", "RequestItem")
+                        .WithMany("InventoryTransactions")
+                        .HasForeignKey("RequestItemId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("WarehouseApp.Domain.Core.Entities.StockLocation", "SourceStockLocation")
                         .WithMany("OutgoingTransactions")
                         .HasForeignKey("SourceStockLocationId")
@@ -1864,6 +2083,8 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Request");
+
+                    b.Navigation("RequestItem");
 
                     b.Navigation("SourceStockLocation");
                 });
@@ -1884,6 +2105,70 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("SubCategory");
+                });
+
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.PurchaseRequest", b =>
+                {
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.Request", "Request")
+                        .WithMany()
+                        .HasForeignKey("RequestId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.Workshop", "Workshop")
+                        .WithMany()
+                        .HasForeignKey("WorkshopId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Request");
+
+                    b.Navigation("Workshop");
+                });
+
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.PurchaseRequestHistory", b =>
+                {
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.ApplicationUser", "ChangedByUser")
+                        .WithMany("PurchaseRequestHistories")
+                        .HasForeignKey("ChangedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.PurchaseRequest", "PurchaseRequest")
+                        .WithMany("History")
+                        .HasForeignKey("PurchaseRequestId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ChangedByUser");
+
+                    b.Navigation("PurchaseRequest");
+                });
+
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.PurchaseRequestItem", b =>
+                {
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.PurchaseRequest", "PurchaseRequest")
+                        .WithMany("Items")
+                        .HasForeignKey("PurchaseRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WarehouseApp.Domain.Core.Entities.RequestItem", "RequestItem")
+                        .WithMany()
+                        .HasForeignKey("RequestItemId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Product");
+
+                    b.Navigation("PurchaseRequest");
+
+                    b.Navigation("RequestItem");
                 });
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Request", b =>
@@ -2010,6 +2295,8 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.ApplicationUser", b =>
                 {
+                    b.Navigation("PurchaseRequestHistories");
+
                     b.Navigation("RequestHistories");
 
                     b.Navigation("Requests");
@@ -2029,11 +2316,23 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     b.Navigation("Workshops");
                 });
 
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.PurchaseRequest", b =>
+                {
+                    b.Navigation("History");
+
+                    b.Navigation("Items");
+                });
+
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.Request", b =>
                 {
                     b.Navigation("History");
 
                     b.Navigation("RequestItems");
+                });
+
+            modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.RequestItem", b =>
+                {
+                    b.Navigation("InventoryTransactions");
                 });
 
             modelBuilder.Entity("WarehouseApp.Domain.Core.Entities.StockLocation", b =>
