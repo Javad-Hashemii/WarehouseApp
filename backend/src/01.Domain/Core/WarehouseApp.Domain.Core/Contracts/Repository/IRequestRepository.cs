@@ -24,7 +24,7 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
 
         Task<IEnumerable<GetAllRequestsDto>> GetSummariesByWarehouseAsync(int warehouseId, CancellationToken ct);
 
-        Task<List<GetAllRequestsDto>> GetSummariesByStatusAsync(RequestStatus status, CancellationToken ct);
+        Task<List<GetAllRequestsDto>> GetSummariesByStatusesAsync(IReadOnlyCollection<RequestStatus> statuses, CancellationToken ct);
 
         Task<GetRequestDto?> GetByIdWithDetailsAsync(int id, CancellationToken ct);
 
@@ -39,7 +39,14 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
         Task<Request?> GetByIdAsync(int id, CancellationToken ct);
         Task<List<GetAllRequestsDto>> GetAllSummariesAsync(CancellationToken ct);
 
+        Task<PaginatedResult<GetAllRequestsForHistoryDto>> GetRequestsForHistoryAsync(
+            string? search,
+            int? workshopId,
+            int? warehouseId,
+            int page,
+            int pageSize,
+            CancellationToken ct);
 
-
+        Task<Request?> GetByIdWithHistoryDetailsAsync(int requestId,CancellationToken ct);
     }
 }
