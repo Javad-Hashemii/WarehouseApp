@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using WarehouseApp.Domain.Core.Entities;
 
 namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
@@ -32,6 +29,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
             builder.HasOne(w => w.Workshop)
                 .WithOne(ws => ws.Warehouse)
                 .HasForeignKey<Warehouse>(w => w.WorkshopId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(w => w.Requests)
