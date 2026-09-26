@@ -1,16 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Warehouse.Mvc.Models.Purchase;
 using Warehouse.Mvc.Models.Request;
 using Warehouse.Mvc.Services;
+using WarehouseApp.Domain.Core.Consts;
 using WarehouseApp.Domain.Core.Contracts.Service;
+using WarehouseApp.Domain.Core.Dtos._common;
 using WarehouseApp.Domain.Core.Dtos.Request;
 using WarehouseApp.Domain.Core.Dtos.RequestItem;
 
 namespace Warehouse.Mvc.Controllers.Request
 {
     [Authorize]
-    public class RequestsController(IRequestService requestService, IProductService productService, ICategoryService categoryService, ISubCategoryService subCategoryService, IWorkshopService workshopService, IRequestDraftService requestDraftService,IEditRequestDraftService editRequestDraftService) : Controller
+    public class RequestsController(IRequestService requestService, IProductService productService, ICategoryService categoryService, ISubCategoryService subCategoryService,
+        IWorkshopService workshopService, IRequestDraftService requestDraftService, IEditRequestDraftService editRequestDraftService, IPurchaseDecisionDraftService purchaseDecisionDraftService) : Controller
     {
         [HttpGet]
         public async Task<IActionResult> Index(CancellationToken ct)
@@ -74,7 +78,14 @@ namespace Warehouse.Mvc.Controllers.Request
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddItem(string? search, int? categoryId, int? subCategoryId, int page,int? requestId,string? returnTo, CancellationToken ct)
+        public async Task<IActionResult> AddItem(
+            string? search,
+            int? categoryId,
+            int? subCategoryId,
+            int page,
+            int? requestId,
+            string? returnTo,
+            CancellationToken ct)
         {
             var viewModel = new AddRequestItemViewModel
             {
@@ -85,8 +96,8 @@ namespace Warehouse.Mvc.Controllers.Request
                 RequestId = requestId,
                 ReturnTo = returnTo ?? "Create"
             };
-            await PopulateAddItemDropdownsAsync(viewModel, ct);
 
+            await PopulateAddItemDropdownsAsync(viewModel, ct);
 
             var result = await productService.SearchProductsAsync(
                 viewModel.Search,
@@ -95,9 +106,13 @@ namespace Warehouse.Mvc.Controllers.Request
                 viewModel.Page,
                 ct);
 
-
             viewModel.Products = result.Items;
 
+            // CHANGED: keep the normalized page returned by pagination
+            viewModel.Page = result.Page;
+
+            // CHANGED: send total page count to the view
+            viewModel.TotalPages = result.TotalPages;
 
             return View(viewModel);
         }
@@ -137,13 +152,29 @@ namespace Warehouse.Mvc.Controllers.Request
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddItem(
-            AddRequestItemViewModel viewModel,
-            CancellationToken ct)
+        public async Task<IActionResult> AddItem(AddRequestItemViewModel viewModel,CancellationToken ct)
         {
             if (!ModelState.IsValid)
             {
                 await PopulateAddItemDropdownsAsync(viewModel, ct);
+
+                // CHANGED: reload products because POST validation returned the same view
+                var result = await productService.SearchProductsAsync(
+                    viewModel.Search,
+                    viewModel.CategoryId,
+                    viewModel.SubCategoryId,
+                    viewModel.Page,
+                    ct);
+
+                // CHANGED
+                viewModel.Products = result.Items;
+
+                // CHANGED
+                viewModel.Page = result.Page;
+
+                // CHANGED
+                viewModel.TotalPages = result.TotalPages;
+
                 return View(viewModel);
             }
 
@@ -168,6 +199,30 @@ namespace Warehouse.Mvc.Controllers.Request
 
                 return RedirectToAction(
                     nameof(Edit),
+                    new { id = viewModel.RequestId.Value });
+            }
+
+            if (viewModel.ReturnTo == "PurchaseDecision" &&
+                viewModel.RequestId.HasValue)
+            {
+                var purchaseItem = new PurchaseDecisionDraftItem
+                {
+                    RequestItemId = null,
+                    ProductId = product.Id,
+                    ProductName = product.Name,
+                    Unit = product.Unit,
+                    QuantityRequested = 0,
+                    QuantityReceived = 0,
+                    QuantityShortage = 0,
+                    QuantityToPurchase = viewModel.QuantityRequested
+                };
+
+                purchaseDecisionDraftService.AddItem(
+                    viewModel.RequestId.Value,
+                    purchaseItem);
+
+                return RedirectToAction(
+                    nameof(PurchaseDecision),
                     new { id = viewModel.RequestId.Value });
             }
 
@@ -274,7 +329,7 @@ namespace Warehouse.Mvc.Controllers.Request
 
         [Authorize(Roles = "WorkshopEmployee,WorkshopManager,CentralManager,Admin")]
         [HttpGet]
-        public async Task<IActionResult> Edit(int id,CancellationToken ct)
+        public async Task<IActionResult> Edit(int id, CancellationToken ct)
         {
             var draft = editRequestDraftService.GetEditRequestDraft(id);
 
@@ -340,7 +395,7 @@ namespace Warehouse.Mvc.Controllers.Request
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditRequestViewModel viewModel,CancellationToken ct)
+        public async Task<IActionResult> Edit(EditRequestViewModel viewModel, CancellationToken ct)
         {
             if (!ModelState.IsValid)
             {
@@ -371,7 +426,7 @@ namespace Warehouse.Mvc.Controllers.Request
                 .Distinct()
                 .ToList();
 
-            var result = await requestService.ModifyRequestItemsAsync(viewModel.RequestId,newItems,updatedItems,deletedItemIds,ct);
+            var result = await requestService.ModifyRequestItemsAsync(viewModel.RequestId, newItems, updatedItems, deletedItemIds, ct);
 
             if (!result.IsSuccess)
             {
@@ -386,10 +441,10 @@ namespace Warehouse.Mvc.Controllers.Request
 
             TempData["SuccessMessage"] = result.Message;
 
-            return RedirectToAction(nameof(Details),new { id = viewModel.RequestId });
+            return RedirectToAction(nameof(Details), new { id = viewModel.RequestId });
         }
 
-        private async Task PopulateEditDropdownsAsync(EditRequestViewModel viewModel,CancellationToken ct)
+        private async Task PopulateEditDropdownsAsync(EditRequestViewModel viewModel, CancellationToken ct)
         {
             var workshops = await workshopService.GetWorkshopsAsync(ct);
 
@@ -404,11 +459,11 @@ namespace Warehouse.Mvc.Controllers.Request
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult RemoveEditItem(int requestId,int productId)
+        public IActionResult RemoveEditItem(int requestId, int productId)
         {
-            editRequestDraftService.RemoveItem(requestId,productId);
+            editRequestDraftService.RemoveItem(requestId, productId);
 
-            return RedirectToAction(nameof(Edit),new { id = requestId });
+            return RedirectToAction(nameof(Edit), new { id = requestId });
         }
 
         [HttpPost]
@@ -421,9 +476,208 @@ namespace Warehouse.Mvc.Controllers.Request
                 nameof(Details),
                 new { id = requestId });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ProcessByWarehouse(int id, CancellationToken ct)
+        {
+            var result = await requestService.GetRequestInformationForWarehouseAsync(id, ct);
+
+            if (!result.IsSuccess || result.Data is null)
+            {
+                TempData["ErrorMessage"] = result.Message;
+                return RedirectToAction(nameof(Index));
+            }
+            return View(result.Data);
+        }
+
+        [HttpPost]
+        [ActionName("ProcessByWarehouse")]
+        [Authorize(Roles = Roles.WarehouseManager)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmWarehouseProcessing(int id, CancellationToken ct)
+        {
+            var result = await requestService.ProcessWarehouseRequestAsync(id, ct);
+
+            if (!result.IsSuccess)
+            {
+                TempData["Error"] = result.Message;
+                return RedirectToAction(nameof(ProcessByWarehouse), new { id });
+            }
+
+            TempData["Success"] = result.Message;
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> ReceiveByWorkshop(int id, CancellationToken ct)
+        {
+            var result = await requestService.GetRequestDetailForWorkshop(id, ct);
+            if (!result.IsSuccess || result.Data is null)
+            {
+                TempData["ErrorMessage"] = result.Message;
+                return RedirectToAction(nameof(Index));
+            }
+            return View(result.Data);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Roles.WorkshopManager)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReceiveByWorkshop(ConfirmWorkshopReceiptViewModel model, CancellationToken ct)
+        {
+            var dto = new ConfirmWorkshopReceiptDto
+            {
+                RequestId = model.RequestId,
+                Items = model.Items.Select(i => new ConfirmWorkshopReceiptItemDto
+                {
+                    RequestItemId = i.RequestItemId,
+                    QuantityReceived = i.QuantityReceived
+                }).ToList()
+            };
+
+            var result = await requestService.ConfirmWorkshopReceiptAsync(dto, ct);
+
+            if (!result.IsSuccess)
+            {
+                TempData["ErrorMessage"] = result.Message;
+                return RedirectToAction(nameof(ReceiveByWorkshop), new { id = model.RequestId });
+            }
+
+            TempData["SuccessMessage"] = result.Message;
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        [Authorize(Roles = Roles.WorkshopManager)]
+        public async Task<IActionResult> PurchaseDecision(int id, CancellationToken ct)
+        {
+            var result = await requestService.GetRequestForPurchaseDecisionAsync(id, ct);
+
+            if (!result.IsSuccess || result.Data == null)
+            {
+                TempData["ErrorMessage"] = result.Message;
+                return RedirectToAction(nameof(Index));
+            }
+
+            var draft = purchaseDecisionDraftService.GetDraft(id);
+
+            if (draft == null)
+            {
+                draft = new PurchaseDecisionDraft
+                {
+                    RequestId = id,
+                    Items = result.Data.Items
+                        .Where(i => i.QuantityShortage > 0)
+                        .Select(i => new PurchaseDecisionDraftItem
+                        {
+                            RequestItemId = i.Id,
+                            ProductId = i.ProductId,
+                            ProductName = i.ProductName,
+                            Unit = i.Unit,
+                            QuantityRequested = i.QuantityRequested,
+                            QuantityReceived = i.QuantityReceived,
+                            QuantityShortage = i.QuantityShortage,
+                            QuantityToPurchase = i.QuantityShortage
+                        })
+                        .ToList()
+                };
+
+                purchaseDecisionDraftService.SaveDraft(draft);
+            }
+
+            var viewModel = new PurchaseDecisionViewModel
+            {
+                RequestId = result.Data.Id,
+                RequestNumber = result.Data.RequestNumber,
+
+                Items = draft.Items.Select(i => new PurchaseDecisionItemViewModel
+                {
+                    RequestItemId = i.RequestItemId,
+                    ProductId = i.ProductId,
+                    ProductName = i.ProductName,
+                    Unit = i.Unit,
+                    QuantityRequested = i.QuantityRequested,
+                    QuantityReceived = i.QuantityReceived,
+                    QuantityShortage = i.QuantityShortage,
+                    QuantityToPurchase = i.QuantityToPurchase
+                }).ToList()
+            };
+
+            return View("~/Views/Purchase/PurchaseDecision.cshtml",viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult RemovePurchaseDecisionItem(int requestId, int productId)
+        {
+            purchaseDecisionDraftService.RemoveItem(requestId, productId);
+
+            return RedirectToAction(
+                nameof(PurchaseDecision),
+                new { id = requestId });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Roles.WorkshopManager)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PurchaseDecision(PurchaseDecisionViewModel viewModel, CancellationToken ct)
+        {
+            var dto = new ConfirmPurchaseDecisionDto
+            {
+                RequestId = viewModel.RequestId,
+                Items = viewModel.Items
+                    .Where(i => i.QuantityToPurchase > 0)
+                    .Select(i => new ConfirmPurchaseDecisionItemDto
+                    {
+                        RequestItemId = i.RequestItemId,
+                        ProductId = i.ProductId,
+                        QuantityToPurchase = i.QuantityToPurchase
+                    })
+                    .ToList()
+            };
+
+            var result = await requestService.ConfirmPurchaseDecisionAsync(dto, ct);
+
+            if (!result.IsSuccess)
+            {
+                TempData["ErrorMessage"] = result.Message;
+
+                return RedirectToAction(
+                    nameof(PurchaseDecision),
+                    new { id = viewModel.RequestId });
+            }
+
+            purchaseDecisionDraftService.Clear(viewModel.RequestId);
+
+            TempData["SuccessMessage"] = result.Message;
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> History(string? search,int? workshopId,int? warehouseId,int page = 1,int pageSize = 10,CancellationToken ct = default)
+        {
+            var result = await requestService.GetRequestsForHistoryAsync(
+                search,
+                workshopId,
+                warehouseId,
+                page,
+                pageSize,
+                ct);
+
+            if (!result.IsSuccess)
+            {
+                TempData["Error"] = result.Message;
+
+                return View(new PaginatedResult<GetAllRequestsForHistoryDto>());
+            }
+
+            return View(result.Data);
+        }
+
     }
-
-
 
 }
 
