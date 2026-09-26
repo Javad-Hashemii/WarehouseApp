@@ -7,9 +7,9 @@ namespace WarehouseApp.Domain.Core.Entities
 {
     public class StockLocation: BaseEntity
     {
+        public string Name { get; set; } = null!;
         public int? WarehouseId { get; set; }
         public int? WorkshopId { get; set; }
-
         public Warehouse? Warehouse { get; set; }
         public Workshop? Workshop { get; set; }
 
