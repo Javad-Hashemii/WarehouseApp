@@ -30,7 +30,16 @@ namespace WarehouseApp.Domain.Core.Contracts.Service
         //Task<ResultDto<bool>> ApproveWorkshopRequestAsync(int requestId, int userId, CancellationToken ct);
         Task<ResultDto<bool>> ApproveRequestAsync(int requestId, CancellationToken ct);
         Task<ResultDto<bool>> RejectRequestAsync(int requestId, CancellationToken ct);
+        Task<ResultDto<GetRequestDto>> GetRequestInformationForWarehouseAsync(int requestId, CancellationToken ct);
 
+        Task<ResultDto<bool>> ProcessWarehouseRequestAsync(int requestId, CancellationToken ct);
+        Task<ResultDto<GetRequestDto>> GetRequestDetailForWorkshop(int requestId, CancellationToken ct);
+        Task<ResultDto<bool>> ConfirmWorkshopReceiptAsync(ConfirmWorkshopReceiptDto confirmWorkshopReceipt, CancellationToken ct);
+
+        Task<ResultDto<GetRequestDto>> GetRequestForPurchaseDecisionAsync(int requestId, CancellationToken ct);
+        Task<ResultDto<bool>> ConfirmPurchaseDecisionAsync(ConfirmPurchaseDecisionDto dto,CancellationToken ct);
+
+        Task<ResultDto<PaginatedResult<GetAllRequestsForHistoryDto>>> GetRequestsForHistoryAsync(string? search, int? workshopId, int? warehouseId, int page, int pageSize, CancellationToken ct);
 
 
     }
