@@ -12,26 +12,19 @@ namespace WarehouseApp.Application.Services
     {
         public async Task<ResultDto<bool>> CreateCity(CreateCityDto createCityDto, CancellationToken ct)
         {
-            try
+            bool isCityExist = await cityRepository.IsCityExist(createCityDto.Name, ct);
+            if (isCityExist)
             {
-                bool isCityExist= await cityRepository.IsCityExist(createCityDto.Name, ct);
-                if(isCityExist)
-                {
-                    return ResultDto<bool>.Failure("نام دسته بندی تکراری است.");
-                }   
-                var result = await cityRepository.CreateCity(createCityDto, ct);
-                if (!result)
-                {
-                    return ResultDto<bool>.Failure("خطا در ایجاد شهر.");
-                }
-                else
-                {
-                    return ResultDto<bool>.Success("شهر با موفقیت ایجاد شد.", true);
-                }
+                return ResultDto<bool>.Failure("نام دسته بندی تکراری است.");
             }
-            catch(Exception ex) 
+            var result = await cityRepository.CreateCity(createCityDto, ct);
+            if (!result)
             {
                 return ResultDto<bool>.Failure("خطا در ایجاد شهر.");
+            }
+            else
+            {
+                return ResultDto<bool>.Success("شهر با موفقیت ایجاد شد.", true);
             }
         }
 
