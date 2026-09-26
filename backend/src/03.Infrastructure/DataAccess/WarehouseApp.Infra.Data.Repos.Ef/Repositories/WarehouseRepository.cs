@@ -1,19 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WarehouseApp.Domain.Core.Contracts.Repository;
+using WarehouseApp.Domain.Core.Dtos.Balance;
 using WarehouseApp.Domain.Core.Dtos.Warehouse;
 using WarehouseApp.Domain.Core.Entities;
 using WarehouseApp.Infra.Db.SqlServer.Ef.DbContext;
 
 namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
 {
-    public class WarehouseRepository(AppDbContext _context) : IWarehouseRepository
+    public class WarehouseRepository(AppDbContext _context) :   IWarehouseRepository
     {
         public async Task<bool> CreateWarehouseAsync(string name, int cityId, CancellationToken ct)
         {
             var warehouse = new Warehouse
             {
                 Name = name,
-                CityId = cityId
+                CityId = cityId,
+                StockLocation = new StockLocation
+                {
+                    Name = name
+                }
             };
             _context.Warehouses.Add(warehouse);
             return await _context.SaveChangesAsync(ct) > 0;
@@ -60,14 +65,22 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                 .ToListAsync(ct);
         }
 
-        public async Task<bool> UpdateWarehouseAsync(int warehouseId, string name, int cityId, CancellationToken ct)
+        public async Task<bool> UpdateWarehouseAsync(int warehouseId,string name,int cityId,CancellationToken ct)
         {
-           var result = _context.Warehouses
-                .Where(w => w.Id == warehouseId)
-                .ExecuteUpdateAsync(setter => setter
-                .SetProperty(w => w.Name, name)
-                .SetProperty(w => w.CityId, cityId), ct);
-            return await result > 0;
+            var warehouse = await _context.Warehouses
+                .Include(w => w.StockLocation)
+                .FirstAsync(
+                    w => w.Id == warehouseId && !w.IsDeleted,
+                    ct);
+
+            warehouse.Name = name;
+            warehouse.CityId = cityId;
+
+            warehouse.StockLocation.Name = name;
+
+            await _context.SaveChangesAsync(ct);
+
+            return true;
         }
 
         public async Task<bool> IsWarehouseExistAsync(string warehouseName, CancellationToken ct)
@@ -87,6 +100,21 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                 .Where(w => w.WorkshopId == workshopId && !w.IsDeleted)
                 .Select(w => (int?)w.Id)
                 .SingleOrDefaultAsync(ct);
+        }
+
+        public async Task<List<InventoryLocationDto>> GetWarehouseInventoryLocationsAsync(CancellationToken ct)
+        {
+            return await _context.Warehouses
+                .AsNoTracking()
+                .Where(w => !w.IsDeleted)
+                .Select(w => new InventoryLocationDto
+                {
+                    StockLocationId = w.StockLocation.Id,
+                    Name = w.Name,
+                    CityName = w.City.Name
+                })
+                .OrderBy(w => w.Name)
+                .ToListAsync(ct);
         }
     }
 }
