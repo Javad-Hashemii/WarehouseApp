@@ -12,6 +12,7 @@ namespace WarehouseApp.Domain.Core.Contracts.Service
     {
         Task<ResultDto<bool>> CreateTransactionAsync(CreateTransactionDto createTransactionDto, CancellationToken ct);
         Task<List<GetAllTransactionsDto>> GetAllTransactionsAsync(CancellationToken ct);
+        Task<ResultDto<List<GetRequestTransactionDto>>> GetTransactionsForRequestAsync(int requestId,CancellationToken ct);
 
     }
 }
