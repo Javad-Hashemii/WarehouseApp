@@ -3,7 +3,12 @@
 @{
     ViewData["Title"] = "ویرایش درخواست";
 }
-
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
 <div class="container py-4" dir="rtl">
 
     <form asp-controller="Requests"
