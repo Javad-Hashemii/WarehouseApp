@@ -17,6 +17,7 @@ namespace WarehouseApp.Domain.Core.Entities
 
         public ICollection<Request> Requests { get; set; } = new List<Request>();
         public ICollection<RequestHistory> RequestHistories { get; set; }= new List<RequestHistory>();
+        public ICollection<PurchaseRequestHistory> PurchaseRequestHistories { get; set; } = new List<PurchaseRequestHistory>();
 
     }
 }
