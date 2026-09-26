@@ -1,0 +1,226 @@
+﻿@using WarehouseApp.Domain.Core.Dtos.RequestHistory
+
+@model RequestHistoryDetailsDto
+
+@{
+    ViewData["Title"] = "جزئیات تاریخچه درخواست";
+}
+
+<div class="container mt-4" dir="rtl">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h4 class="mb-1">
+                <i class="bi bi-clock-history me-2"></i>
+                تاریخچه درخواست
+            </h4>
+
+            <span class="text-muted">
+                شماره درخواست: @Model.RequestNumber
+            </span>
+        </div>
+
+        <div class="d-flex gap-2">
+
+            <a asp-action="Transactions"
+               asp-route-requestId="@Model.RequestId"
+               class="btn btn-outline-primary">
+
+                <i class="bi bi-arrow-left-right me-1"></i>
+                مشاهده تراکنش‌ها
+
+            </a>
+
+            <a asp-action="Index"
+               class="btn btn-outline-secondary">
+
+                <i class="bi bi-arrow-right"></i>
+                بازگشت
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    @* Request Information *@
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+            <h5 class="mb-0">اطلاعات درخواست</h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row g-3">
+
+                <div class="col-md-3">
+                    <span class="text-muted d-block mb-1">
+                        شماره درخواست
+                    </span>
+
+                    <strong>
+                        @Model.RequestNumber
+                    </strong>
+                </div>
+
+
+                <div class="col-md-3">
+                    <span class="text-muted d-block mb-1">
+                        کارگاه
+                    </span>
+
+                    <strong>
+                        @Model.WorkshopName
+                    </strong>
+                </div>
+
+
+                <div class="col-md-3">
+                    <span class="text-muted d-block mb-1">
+                        انبار
+                    </span>
+
+                    <strong>
+                        @(Model.WarehouseName ?? "-")
+                    </strong>
+                </div>
+
+
+                <div class="col-md-3">
+                    <span class="text-muted d-block mb-1">
+                        وضعیت فعلی
+                    </span>
+
+                    <span class="badge bg-primary">
+                        @Model.CurrentStatus
+                    </span>
+                </div>
+
+
+                <div class="col-md-3">
+                    <span class="text-muted d-block mb-1">
+                        تاریخ ایجاد
+                    </span>
+
+                    <strong>
+                        @(Model.CreatedAt.ToLocalTime().ToString("yyyy/MM/dd HH:mm"))
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    @* Timeline *@
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            <h5 class="mb-0">
+                تاریخچه تغییرات
+            </h5>
+        </div>
+
+
+        <div class="card-body">
+
+            @if (Model.Timeline == null || !Model.Timeline.Any())
+            {
+                <div class="alert alert-info mb-0">
+                    تاریخچه‌ای برای این درخواست ثبت نشده است.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover align-middle">
+
+                        <thead class="table-light">
+
+                            <tr>
+                                <th>وضعیت قبلی</th>
+                                <th>وضعیت جدید</th>
+                                <th>تغییر دهنده</th>
+                                <th>تاریخ تغییر</th>
+                                <th>نوع عملیات</th>
+                                <th>توضیحات</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            @foreach (var history in Model.Timeline)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @history.FromStatus
+                                    </td>
+
+
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            @history.ToStatus
+                                        </span>
+                                    </td>
+
+
+                                    <td>
+                                        @(history.ChangedByUserName ?? "-")
+                                    </td>
+
+
+                                    <td>
+                                        @(history.ChangedAt
+                                            .ToLocalTime()
+                                            .ToString("yyyy/MM/dd HH:mm"))
+                                    </td>
+
+
+                                    <td>
+
+                                        @if (history.Source == "Purchase")
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                خرید
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-info text-dark">
+                                                درخواست
+                                            </span>
+                                        }
+
+                                    </td>
+
+
+                                    <td>
+                                        @(string.IsNullOrWhiteSpace(history.Notes)
+                                            ? "-"
+                                            : history.Notes)
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
