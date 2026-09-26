@@ -1,0 +1,237 @@
+﻿@model Warehouse.Mvc.Models.Purchase.ConfirmPurchaseReceiptViewModel
+
+@{
+    ViewData["Title"] = "دریافت کالا از تامین‌کننده";
+}
+
+<div class="container mt-4" dir="rtl">
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+            <h5 class="mb-0">
+                ثبت دریافت کالا
+            </h5>
+        </div>
+
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6 mb-2">
+                    <strong>شماره درخواست خرید:</strong>
+                    @Model.PurchaseRequestNumber
+                </div>
+
+
+                <div class="col-md-6 mb-2">
+                    <strong>کارگاه:</strong>
+                    @Model.WorkshopName
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            <h5 class="mb-0">
+                اقلام خریداری شده
+            </h5>
+        </div>
+
+
+        <div class="card-body">
+
+
+            <form asp-action="Receive"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       asp-for="PurchaseRequestNumber" />
+
+                <input type="hidden"
+                       asp-for="WorkshopName" />
+
+
+                <input type="hidden"
+                       asp-for="PurchaseRequestId" />
+
+
+                <table class="table table-bordered table-striped align-middle text-center">
+
+
+                    <thead>
+
+                        <tr>
+                            <th>
+                                کالا
+                            </th>
+
+                            <th>
+                                واحد
+                            </th>
+
+                            <th>
+                                مقدار خریداری شده
+                            </th>
+
+                            <th>
+                                مقدار دریافت شده قبلی
+                            </th>
+
+                            <th>
+                                مقدار باقی‌مانده
+                            </th>
+
+                            <th>
+                                دریافت فعلی
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        @for (var i = 0; i < Model.Items.Count; i++)
+                        {
+
+                            var item = Model.Items[i];
+
+                            <tr>
+
+
+                                <td>
+
+                                    @item.ProductName
+
+
+                                    <input type="hidden"
+                                           asp-for="Items[i].PurchaseRequestItemId" />
+
+                                    <input type="hidden"
+                                           asp-for="Items[i].ProductId" />
+
+                                    <input type="hidden"
+                                           asp-for="Items[i].ProductName" />
+
+                                    <input type="hidden"
+                                           asp-for="Items[i].Unit" />
+
+
+
+                                </td>
+
+
+
+                                <td>
+                                    @item.Unit
+                                </td>
+
+
+
+                                <td>
+                                    @item.QuantityPurchased
+                                </td>
+
+
+
+                                <td>
+                                    @item.QuantityReceived
+                                </td>
+
+
+
+                                <td>
+
+                                    @(item.QuantityPurchased - item.QuantityReceived)
+
+                                </td>
+
+
+
+                                <td style="width:180px">
+
+
+                                    <input asp-for="Items[i].QuantityReceivedNow"
+                                           type="number"
+                                           min="0"
+                                           max="@(item.QuantityPurchased - item.QuantityReceived)"
+                                           step="0.001"
+                                           class="form-control text-center" />
+
+
+                                </td>
+
+
+                            </tr>
+
+                        }
+
+
+                    </tbody>
+
+
+                </table>
+
+
+
+                <div class="alert alert-warning mt-3">
+
+                    مقدار دریافت فعلی نمی‌تواند بیشتر از مقدار باقی‌مانده خرید باشد.
+
+                </div>
+
+
+
+                <div class="d-flex justify-content-between mt-4">
+
+
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary">
+
+                        بازگشت
+
+                    </a>
+
+
+
+                    <button type="submit"
+                            class="btn btn-success">
+
+                        <i class="bi bi-check-circle"></i>
+
+                        ثبت دریافت کالا
+
+                    </button>
+
+
+                </div>
+
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
