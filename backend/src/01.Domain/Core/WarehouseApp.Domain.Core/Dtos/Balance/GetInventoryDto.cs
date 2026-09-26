@@ -4,7 +4,9 @@ using System.Text;
 
 namespace WarehouseApp.Domain.Core.Dtos.InventoryBalance
 {
-    internal class GetInventory
+    public class GetInventoryDto
     {
+        public int ProductId { get; set; }
+        public decimal Quantity { get; set; }
     }
 }
