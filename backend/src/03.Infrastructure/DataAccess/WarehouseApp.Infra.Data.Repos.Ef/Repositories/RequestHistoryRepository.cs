@@ -60,5 +60,46 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                 })
                 .ToListAsync(ct);
         }
+
+        public async Task<List<GetRequestHistoryDetail>> GetRequestHistoryDetailsAsync(int requestId, CancellationToken ct)
+        {
+            return await _context.RequestHistories
+                .AsNoTracking()
+                .Where(rh => rh.RequestId == requestId)
+                .OrderByDescending(rh => rh.ChangedAt)
+                .Select(rh => new GetRequestHistoryDetail
+                {
+                    Id = rh.Id,
+                    RequestId = rh.RequestId,
+                    FromStatus = rh.FromStatus,
+                    ToStatus = rh.ToStatus,
+                    ChangedByUserId = rh.ChangedByUserId,
+                    ChangedByUserName = rh.ChangedByUser.FullName,
+                    ChangedAt = rh.ChangedAt,
+                    Notes = rh.Notes
+                })
+                .ToListAsync(ct);
+        }
+
+
+        public async Task<List<RequestTimelineItemDto>> GetRequestTimelineAsync(
+            int requestId,
+            CancellationToken ct)
+        {
+            return await _context.RequestHistories
+                .AsNoTracking()
+                .Where(h => h.RequestId == requestId)
+                .Select(h => new RequestTimelineItemDto
+                {
+                    FromStatus = h.FromStatus.ToString(),
+                    ToStatus = h.ToStatus.ToString(),
+                    ChangedByUserId = h.ChangedByUserId,
+                    ChangedByUserName = h.ChangedByUser.FullName,
+                    ChangedAt = h.ChangedAt,
+                    Notes = h.Notes,
+                    Source = "Request"
+                })
+                .ToListAsync(ct);
+        }
     }
 }
