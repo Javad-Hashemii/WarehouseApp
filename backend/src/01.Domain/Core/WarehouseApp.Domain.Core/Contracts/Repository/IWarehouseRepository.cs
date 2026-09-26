@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WarehouseApp.Domain.Core.Dtos.Balance;
 using WarehouseApp.Domain.Core.Dtos.Warehouse;
 
 namespace WarehouseApp.Domain.Core.Contracts.Repository
@@ -15,6 +16,7 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
         Task<bool> IsWarehouseExistAsync(string warehouseName, CancellationToken ct);
         Task<bool>IsWarehouseExistById(int warehouseId, CancellationToken ct);
         Task<int?> GetWarehouseIdByWorkshopId(int workshopId, CancellationToken ct);
+        Task<List<InventoryLocationDto>> GetWarehouseInventoryLocationsAsync(CancellationToken ct);
 
     }
 }
