@@ -1,0 +1,247 @@
+﻿@model Warehouse.Mvc.Models.Purchase.ProcessPurchaseViewModel
+
+@{
+    ViewData["Title"] = "ثبت خرید";
+}
+
+<div class="container mt-4" dir="rtl">
+
+    <div class="card mb-4 shadow-sm">
+
+        <div class="card-header d-flex justify-content-between align-items-center">
+
+            <h4 class="mb-0">
+                ثبت خرید درخواست @Model.PurchaseRequestNumber
+            </h4>
+
+            <a asp-controller="Purchase"
+               asp-action="Index"
+               class="btn btn-outline-secondary btn-sm">
+
+                <i class="bi bi-arrow-right"></i>
+                بازگشت
+
+            </a>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <p>
+                        <strong>شماره درخواست خرید:</strong>
+                        @Model.PurchaseRequestNumber
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                    <p>
+                        <strong>کارگاه:</strong>
+                        @Model.WorkshopName
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            <h5 class="mb-0">
+                اطلاعات خرید
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-controller="Purchase"
+                  asp-action="ProcessPurchase"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       asp-for="PurchaseRequestId" />
+
+                <input type="hidden"
+                       asp-for="PurchaseRequestNumber" />
+
+                <input type="hidden"
+                       asp-for="WorkshopName" />
+
+                <div class="row mb-4">
+
+                    <div class="col-md-4 mb-3">
+
+                        <label asp-for="Supplier"
+                               class="form-label">
+                            تامین‌کننده
+                        </label>
+
+                        <input asp-for="Supplier"
+                               class="form-control"
+                               placeholder="نام تامین‌کننده" />
+
+                        <span asp-validation-for="Supplier"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="col-md-4 mb-3">
+
+                        <label asp-for="PurchaseDate"
+                               class="form-label">
+                            تاریخ خرید
+                        </label>
+
+                        <input asp-for="PurchaseDate"
+                               type="date"
+                               class="form-control" />
+
+                        <span asp-validation-for="PurchaseDate"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="col-md-4 mb-3">
+
+                        <label asp-for="ExpectedDeliveryDate"
+                               class="form-label">
+                            تاریخ تحویل مورد انتظار
+                        </label>
+
+                        <input asp-for="ExpectedDeliveryDate"
+                               type="date"
+                               class="form-control" />
+
+                        <span asp-validation-for="ExpectedDeliveryDate"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover align-middle text-center">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>کالا</th>
+                                <th>واحد</th>
+                                <th>مقدار تایید شده</th>
+                                <th>مقدار خرید</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @for (var i = 0; i < Model.Items.Count; i++)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @Model.Items[i].ProductName
+
+                                        <input type="hidden"
+                                               asp-for="Items[i].PurchaseRequestItemId" />
+
+                                        <input type="hidden"
+                                               asp-for="Items[i].ProductId" />
+
+                                        <input type="hidden"
+                                               asp-for="Items[i].ProductName" />
+
+                                        <input type="hidden"
+                                               asp-for="Items[i].Unit" />
+
+                                        <input type="hidden"
+                                               asp-for="Items[i].QuantityApproved" />
+                                    </td>
+
+                                    <td>
+                                        @Model.Items[i].Unit
+                                    </td>
+
+                                    <td>
+                                        <span class="badge bg-primary fs-6">
+                                            @Model.Items[i].QuantityApproved
+                                        </span>
+                                    </td>
+
+                                    <td style="width:200px;">
+
+                                        <input asp-for="Items[i].QuantityPurchased"
+                                               type="number"
+                                               min="0"
+                                               max="@Model.Items[i].QuantityApproved"
+                                               step="0.001"
+                                               class="form-control text-center" />
+
+                                        <span asp-validation-for="Items[i].QuantityPurchased"
+                                              class="text-danger">
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="mt-4">
+
+                    <label asp-for="Notes"
+                           class="form-label">
+                        توضیحات
+                    </label>
+
+                    <textarea asp-for="Notes"
+                              class="form-control"
+                              rows="3"
+                              placeholder="توضیحات مربوط به خرید">
+                    </textarea>
+
+                </div>
+
+
+                <div class="d-flex justify-content-end mt-4">
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+
+                        <i class="bi bi-cart-check me-1"></i>
+                        ثبت خرید
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
