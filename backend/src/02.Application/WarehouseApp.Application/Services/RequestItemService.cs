@@ -33,8 +33,7 @@ namespace WarehouseApp.Application.Services
 
             if (items == null || items.Count == 0)
             {
-                return ResultDto<bool>.Failure(
-                    "لیست آیتم های درخواست برای تایید خالی است");
+                return ResultDto<bool>.Failure("لیست آیتم های درخواست برای تایید خالی است");
             }
 
             var ids= items.Select(i => i.RequestItemId).Distinct().ToList();
@@ -46,8 +45,7 @@ namespace WarehouseApp.Application.Services
 
             if (requestItemsById.Count != ids.Count)
             {
-                return ResultDto<bool>.Failure(
-                    "بعضی از آیتم های درخواست پیدا نشدند");
+                return ResultDto<bool>.Failure("بعضی از آیتم های درخواست پیدا نشدند");
             }
 
 
