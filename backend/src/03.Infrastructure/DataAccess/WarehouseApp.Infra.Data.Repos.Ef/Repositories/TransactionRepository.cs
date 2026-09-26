@@ -51,5 +51,53 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                     .SetProperty(it => it.TransactionDate, updateTransactionDto.TransactionDate), ct);
             return await result > 0;
         }
+        public async Task AddTransactionsAsync(IEnumerable<InventoryTransaction> transactions, CancellationToken ct)
+        {
+            await _context.InventoryTransactions.AddRangeAsync(transactions, ct);
+        }
+
+        public async Task<List<InventoryTransaction>> GetTransactionsByRequestIdForUpdateAsync(int requestId, CancellationToken ct)
+        {
+            return await _context.InventoryTransactions
+                .Where(t => t.RequestId == requestId)
+                .ToListAsync(ct);
+        }
+
+        public async Task<List<GetRequestTransactionDto>> GetTransactionsForRequest(int requestId,CancellationToken ct)
+        {
+            return await _context.InventoryTransactions
+                .AsNoTracking()
+                .Where(t => t.RequestId == requestId)
+                .Select(t => new GetRequestTransactionDto
+                {
+                    Id = t.Id,
+
+                    ProductId = t.ProductId,
+                    ProductName = t.Product.Name,
+
+                    SourceStockLocationName = t.SourceStockLocation != null
+                        ? t.SourceStockLocation.Name
+                        : null,
+
+                    DestinationStockLocationName = t.DestinationStockLocation != null
+                        ? t.DestinationStockLocation.Name
+                        : null,
+
+                    TransactionType = t.TransactionType,
+                    Status = t.Status,
+
+                    Quantity = t.Quantity,
+                    QuantityReceived = t.QuantityReceived,
+
+                    TransactionDate = t.TransactionDate,
+                    ReceivedAt = t.ReceivedAt,
+
+                    PerformedByUserId = t.PerformedByUserId,
+                    PerformedByUsername = t.PerformedByUser.FullName,
+
+                    Notes = t.Notes
+                })
+                .ToListAsync(ct);
+        }
     }
 }
