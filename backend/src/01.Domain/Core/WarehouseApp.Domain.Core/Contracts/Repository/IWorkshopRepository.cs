@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WarehouseApp.Domain.Core.Dtos.Balance;
 using WarehouseApp.Domain.Core.Dtos.Workshop;
 
 namespace WarehouseApp.Domain.Core.Contracts.Repository
@@ -19,5 +20,6 @@ namespace WarehouseApp.Domain.Core.Contracts.Repository
         Task<bool> IsWorkshopExistByIdAsync(int workshopId,CancellationToken ct);
 
         Task<bool> SoftDeleteWorkshopAsync(int workshopId,int deletedByUserId,CancellationToken ct);
+        Task<List<InventoryLocationDto>> GetWorkshopInventoryLocationsAsync(CancellationToken ct);
     }
 }
