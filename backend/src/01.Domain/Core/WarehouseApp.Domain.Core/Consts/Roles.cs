@@ -11,5 +11,7 @@ namespace WarehouseApp.Domain.Core.Consts
         public const string WarehouseManager = "WarehouseManager";
         public const string CentralManager = "CentralManager";
         public const string Admin = "Admin";
+
+        public const string ProcurementOfficer = "ProcurementOfficer";
     }
 }
