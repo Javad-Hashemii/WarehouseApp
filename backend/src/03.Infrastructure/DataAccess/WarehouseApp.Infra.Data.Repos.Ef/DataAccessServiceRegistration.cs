@@ -30,6 +30,9 @@ namespace WarehouseApp.Infra.Data.Repos.Ef
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IWarehouseRepository, WarehouseRepository>();
             services.AddScoped<IWorkshopRepository, WorkshopRepository>();
+            services.AddScoped<IPurchaseRequestRepository, PurchaseRequestRepository>();
+            services.AddScoped<IPurchaseRequestHistoryRepository, PurchaseRequestHistoryRepository>();
+
 
             return services;
         }
