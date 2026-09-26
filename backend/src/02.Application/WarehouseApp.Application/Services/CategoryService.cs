@@ -13,33 +13,26 @@ namespace WarehouseApp.Application.Services
     {
         public async Task<ResultDto<bool>> CreateCategoryAsync(CreateCategoryDto createCategoryDto, CancellationToken ct)
         {
-            try
+
+            bool isNameTaken = await categoryRepository.IsExistByNameAsync(createCategoryDto.Name, ct);
+            if (isNameTaken)
             {
-                bool isNameTaken= await categoryRepository.IsExistByNameAsync(createCategoryDto.Name, ct);
-                if(isNameTaken)
-                {
-                    return ResultDto<bool>.Failure("نام دسته بندی تکراری است!");
-                }
-
-                var uploadResult = UploadCategoryImage(createCategoryDto);
-                if(!uploadResult.IsSuccess)
-                {
-                    return ResultDto<bool>.Failure(uploadResult.Message);
-                }
-
-                var result = await categoryRepository.CreateCategoryAsync(createCategoryDto, ct);
-                if (!result)
-                {
-                    return ResultDto<bool>.Failure("خطا در ایجاد دسته بندی!");
-
-                }
-                return ResultDto<bool>.Success("دسته بندی جدید ثبت شد.");
+                return ResultDto<bool>.Failure("نام دسته بندی تکراری است!");
             }
-            catch(Exception ex)
+
+            var uploadResult = UploadCategoryImage(createCategoryDto);
+            if (!uploadResult.IsSuccess)
             {
-                return ResultDto<bool>.Failure("خطایی در سیستم رخ داده است.");
+                return ResultDto<bool>.Failure(uploadResult.Message);
+            }
+
+            var result = await categoryRepository.CreateCategoryAsync(createCategoryDto, ct);
+            if (!result)
+            {
+                return ResultDto<bool>.Failure("خطا در ایجاد دسته بندی!");
 
             }
+            return ResultDto<bool>.Success("دسته بندی جدید ثبت شد.");
 
         }
 
@@ -80,25 +73,21 @@ namespace WarehouseApp.Application.Services
                 return ResultDto<bool>.Success("تصویری برای آپلود ارسال نشد، اما عملیات ادامه یافت.", true);
             }
 
-            try
+
+            var filePath = fileService.Upload(categoryDto.ImageFile, "Category");
+
+            if (string.IsNullOrEmpty(filePath))
             {
-                var filePath = fileService.Upload(categoryDto.ImageFile, "Category");
-
-                if (string.IsNullOrEmpty(filePath))
-                {
-                    // Message first, bool defaults to false
-                    return ResultDto<bool>.Failure("آپلود تصویر ناموفق بود!");
-                }
-
-                categoryDto.ImagePath = filePath;
-
-                // Pass a success message first, then the boolean 'true'
-                return ResultDto<bool>.Success("آپلود با موفقیت انجام شد.", true);
+                // Message first, bool defaults to false
+                return ResultDto<bool>.Failure("آپلود تصویر ناموفق بود!");
             }
-            catch (Exception ex)
-            {
-                return ResultDto<bool>.Failure("خطایی در هنگام آپلود تصویر رخ داد.");
-            }
+
+            categoryDto.ImagePath = filePath;
+
+            // Pass a success message first, then the boolean 'true'
+            return ResultDto<bool>.Success("آپلود با موفقیت انجام شد.", true);
+
+
         }
         private async Task<ResultDto<bool>> ImageUpdate(UpdateCategoryDto dto, CancellationToken cancellationToken)
         {
