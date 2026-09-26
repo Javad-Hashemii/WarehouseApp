@@ -1,0 +1,92 @@
+﻿@model WarehouseApp.Domain.Core.Dtos.Request.GetRequestDto
+
+@{
+    ViewData["Title"] = "بررسی درخواست توسط انبار";
+}
+
+<div class="container mt-4" dir="rtl">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">بررسی درخواست توسط انبار</h5>
+        </div>
+
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-4 mb-2">
+                    <strong>شماره درخواست:</strong>
+                    <span>@Model.RequestNumber</span>
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    <strong>کارگاه:</strong>
+                    <span>@Model.WorkshopName</span>
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    <strong>تاریخ درخواست:</strong>
+                    <span>@Model.CreatedAt.ToString("yyyy/MM/dd")</span>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>محصول</th>
+                            <th>واحد</th>
+                            <th>مقدار درخواست‌شده</th>
+                            <th>موجودی انبار</th>
+                            <th>مقدار قابل ارسال</th>
+                            <th>کسری</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td>@item.Unit</td>
+                                <td>@item.QuantityRequested</td>
+                                <td>@item.QuantityAvailable</td>
+                                <td>
+                                    <span class="badge bg-success fs-6">
+                                        @item.QuantityToIssue
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (item.QuantityShortage > 0)
+                                    {
+                                        <span class="badge bg-danger fs-6">
+                                            @item.QuantityShortage
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary fs-6">
+                                            بدون کسری
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    بازگشت به درخواست‌ها
+                </a>
+
+                <form asp-action="ProcessByWarehouse" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit" class="btn btn-success">
+                        تایید و ارسال اقلام موجود
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
