@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using WarehouseApp.Domain.Core.Contracts.Repository;
+using WarehouseApp.Domain.Core.Dtos.Balance;
 using WarehouseApp.Domain.Core.Dtos.Workshop;
 using WarehouseApp.Domain.Core.Entities;
 using WarehouseApp.Infra.Db.SqlServer.Ef.DbContext;
@@ -16,7 +17,11 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
             var workshop = new Workshop
             {
                 Name = name,
-                CityId = cityId
+                CityId = cityId,
+                StockLocation = new StockLocation
+                {
+                    Name = name
+                }
             };
             _context.Workshops.Add(workshop);
             return await _context.SaveChangesAsync(ct) > 0;
@@ -38,14 +43,21 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                 .ToListAsync(ct);
         }
 
-        public async Task<bool> UpdateWorkshopAsync(UpdateWorkshopDto updateWorkshopDto, CancellationToken ct)
+        public async Task<bool> UpdateWorkshopAsync(UpdateWorkshopDto updateWorkshopDto,CancellationToken ct)
         {
-            var result = await _context.Workshops
-                .Where(w => w.Id == updateWorkshopDto.Id && !w.IsDeleted)
-                .ExecuteUpdateAsync(setter => setter
-                    .SetProperty(w => w.Name, updateWorkshopDto.Name)
-                    .SetProperty(w => w.CityId, updateWorkshopDto.CityId), ct);
-            return result > 0;
+            var workshop = await _context.Workshops
+                .Include(w => w.StockLocation)
+                .FirstAsync(w =>
+                    w.Id == updateWorkshopDto.Id &&
+                    !w.IsDeleted,
+                    ct);
+
+            workshop.Name = updateWorkshopDto.Name;
+            workshop.CityId = updateWorkshopDto.CityId;
+
+            workshop.StockLocation.Name = updateWorkshopDto.Name;
+
+            return await _context.SaveChangesAsync(ct) > 0;
         }
         public async Task<bool> IsWorkshopExistAsync(string workshopName, CancellationToken ct)
         {
@@ -82,6 +94,20 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                     .SetProperty(w => w.DeletedByUserId, deletedByUserId)
                     .SetProperty(w => w.DeletedAt, DateTime.UtcNow), ct);
             return result > 0;
+        }
+        public async Task<List<InventoryLocationDto>> GetWorkshopInventoryLocationsAsync(CancellationToken ct)
+        {
+            return await _context.Workshops
+                .AsNoTracking()
+                .Where(w => !w.IsDeleted)
+                .Select(w => new InventoryLocationDto
+                {
+                    StockLocationId = w.StockLocation.Id,
+                    Name = w.Name,
+                    CityName = w.City.Name
+                })
+                .OrderBy(w => w.Name)
+                .ToListAsync(ct);
         }
     }
 }
