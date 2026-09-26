@@ -26,6 +26,7 @@ namespace WarehouseApp.Application
             services.AddScoped<IWarehouseService, WarehouseService>();
             services.AddScoped<IWorkshopService, WorkshopService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<IPurchaseRequestService, PurchaseRequestService>();
             services.AddScoped<IUserService, UserService>();
 
             return services;
