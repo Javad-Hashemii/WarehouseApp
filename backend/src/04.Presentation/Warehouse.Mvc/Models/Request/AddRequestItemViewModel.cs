@@ -47,6 +47,7 @@ namespace Warehouse.Mvc.Models.Request
         // Pagination
 
         public int Page { get; set; } = 1;
+        public int TotalPages { get; set; }
 
         public int? RequestId { get; set; }
 
