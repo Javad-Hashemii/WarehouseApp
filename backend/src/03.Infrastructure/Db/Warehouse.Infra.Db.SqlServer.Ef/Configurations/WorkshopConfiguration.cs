@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using WarehouseApp.Domain.Core.Entities;
 
 namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
@@ -12,7 +8,6 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
     {
         public void Configure(EntityTypeBuilder<Workshop> builder)
         {
-
             builder.HasKey(w => w.Id);
 
             builder.Property(w => w.Name)
