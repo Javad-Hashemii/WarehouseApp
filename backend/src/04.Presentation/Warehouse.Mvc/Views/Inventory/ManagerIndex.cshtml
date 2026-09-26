@@ -1,0 +1,69 @@
+﻿@model Warehouse.Mvc.Models.InventoryBalance.ManagerInventoryIndexViewModel
+
+@{
+    ViewData["Title"] = "موجودی";
+}
+
+<div class="container mt-4" dir="rtl">
+
+    <div class="mb-4">
+        <h4>موجودی</h4>
+        <span class="text-muted">
+            محل مورد نظر را انتخاب کنید
+        </span>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center py-5">
+
+                    <i class="bi bi-house-door fs-1 mb-3 d-block"></i>
+
+                    <h5 class="mb-3">
+                        موجودی کارگاه
+                    </h5>
+
+                    <a asp-action="Details"
+                       asp-route-stockLocationId="@Model.WorkshopStockLocationId"
+                       class="btn btn-primary px-4">
+                        مشاهده موجودی کارگاه
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center py-5">
+
+                    <i class="bi bi-building fs-1 mb-3 d-block"></i>
+
+                    <h5 class="mb-3">
+                        موجودی انبار
+                    </h5>
+
+                    @if (Model.WarehouseStockLocationId.HasValue)
+                    {
+                        <a asp-action="Details"
+                           asp-route-stockLocationId="@Model.WarehouseStockLocationId"
+                           class="btn btn-outline-primary px-4">
+                            مشاهده موجودی انبار
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">
+                            انباری به این کارگاه اختصاص داده نشده است.
+                        </span>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
