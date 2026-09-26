@@ -14,6 +14,8 @@ namespace WarehouseApp.Domain.Core.Dtos.Request
         public int WorkshopId { get; set; }
         public string WorkshopName { get; set; }
         public int? WarehouseId { get; set; }
+        public int? WarehouseStockLocationId { get; set; }
+        public int? WorkshopStockLocationId { get; set; }
 
         public RequestStatus Status { get; set; }
         public string? Notes { get; set; }
