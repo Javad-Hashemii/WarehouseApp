@@ -46,6 +46,11 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Configurations
                 .HasForeignKey(t => t.RequestId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasOne(t => t.RequestItem)
+                .WithMany(ri => ri.InventoryTransactions)
+                .HasForeignKey(t => t.RequestItemId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasOne(t => t.PerformedByUser)
                 .WithMany()
                 .HasForeignKey(t => t.PerformedByUserId)
