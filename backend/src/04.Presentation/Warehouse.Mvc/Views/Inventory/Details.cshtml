@@ -1,0 +1,60 @@
+﻿@model Warehouse.Mvc.Models.InventoryBalance.InventoryDetailsViewModel
+
+@{
+    ViewData["Title"] = "جزئیات موجودی";
+}
+
+<div class="container mt-4" dir="rtl">
+
+    <div class="mb-4">
+        <h4>@Model.StockLocationName</h4>
+        <span class="text-muted">موجودی فعلی</span>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>کالا</th>
+                            <th>موجودی</th>
+                            <th>آخرین بروزرسانی</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model.Items.Any())
+                        {
+                            @foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>@item.ProductName</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.LastUpdatedAt.ToString("yyyy/MM/dd HH:mm")</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">
+                                    موجودی برای این محل ثبت نشده است.
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
