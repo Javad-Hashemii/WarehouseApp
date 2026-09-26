@@ -5,12 +5,11 @@ using System.Collections.Generic;
 using System.Text;
 using WarehouseApp.Domain.Core.Dtos._common;
 
-namespace HomeService.Domain.ApplicationServices._common.Extensions
+namespace WarehouseApp.Application.Extentions
 {
     public static class PaginationExtensions
     {
-        public static async Task<PaginatedResult<T>> ToPaginatedResult<T>(
-            this IQueryable<T> query, int page, int pageSize, CancellationToken cancellationToken)
+        public static async Task<PaginatedResult<T>> ToPaginatedResult<T>(this IQueryable<T> query, int page, int pageSize, CancellationToken cancellationToken)
         {
             if (page < 1)
             {
