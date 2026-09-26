@@ -18,5 +18,6 @@ namespace WarehouseApp.Domain.Core.Entities
 
         public Request Request { get; set; } = null!;
         public Product Product { get; set; } = null!;
+        public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
     }
 }
