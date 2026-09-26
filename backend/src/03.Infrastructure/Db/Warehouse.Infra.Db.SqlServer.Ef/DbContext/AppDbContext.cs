@@ -22,6 +22,10 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.DbContext
         public DbSet<Workshop> Workshops { get; set; }
         public DbSet<RequestHistory> RequestHistories { get; set; }
         public DbSet<StockLocation> StockLocations { get; set; }
+        public DbSet<PurchaseRequest> PurchaseRequests { get; set; }
+        public DbSet<PurchaseRequestItem> PurchaseRequestItems { get; set; }
+
+        public DbSet<PurchaseRequestHistory> PurchaseRequestHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
