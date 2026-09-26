@@ -10,24 +10,18 @@
 <div class="container mt-4" dir="rtl">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-
         <h2>آخرین درخواست ها</h2>
 
-
-        @if (User.IsInRole(Roles.WorkshopEmployee) ||
-             User.IsInRole(Roles.Admin))
+        @if (User.IsInRole(Roles.WorkshopEmployee) || User.IsInRole(Roles.Admin))
         {
             <a asp-action="Create" class="btn btn-primary">
                 <i class="bi bi-plus-circle"></i>
                 درخواست جدید
             </a>
         }
-
     </div>
 
-
     <table class="table table-striped">
-
         <thead>
             <tr>
                 <th>شماره درخواست</th>
@@ -38,63 +32,61 @@
             </tr>
         </thead>
 
-
         <tbody>
-
             @foreach (var req in Model)
             {
                 <tr>
+                    <td>@req.RequestNumber</td>
+                    <td>@req.WorkshopName</td>
+                    <td>@req.CreatedAt.ToShortDateString()</td>
+                    <td>@req.Status.ToString()</td>
 
                     <td>
-                        @req.RequestNumber
-                    </td>
+                        @if (User.IsInRole(Roles.WarehouseManager) && req.Status == RequestStatus.PendingWarehouse)
+                        {
+                            <a asp-action="ProcessByWarehouse"
+                               asp-route-id="@req.Id"
+                               class="btn btn-primary btn-sm">
+                                بررسی توسط انبار
+                            </a>
+                        }
+                        else if (User.IsInRole(Roles.WorkshopManager) && req.Status == RequestStatus.PendingWorkshopReceipt)
+                        {
+                            <a asp-action="ReceiveByWorkshop"
+                               asp-route-id="@req.Id"
+                               class="btn btn-success btn-sm">
+                                تایید دریافت
+                            </a>
+                        }
+                        else if (User.IsInRole(Roles.WorkshopManager) && req.Status == RequestStatus.PendingPurchaseDecision)
+                        {
+                            <a asp-action="PurchaseDecision"
+                               asp-route-id="@req.Id"
+                               class="btn btn-warning btn-sm">
+                                تصمیم خرید
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-action="Details"
+                               asp-route-id="@req.Id"
+                               class="btn btn-info btn-sm">
+                                مشاهده
+                            </a>
+                        }
 
-
-                    <td>
-                        @req.WorkshopName
-                    </td>
-
-
-                    <td>
-                        @req.CreatedAt.ToShortDateString()
-                    </td>
-
-
-                    <td>
-                        @req.Status.ToString()
-                    </td>
-
-
-                    <td>
-
-                        <a asp-action="Details"
-                           asp-route-id="@req.Id"
-                           class="btn btn-info btn-sm">
-
-                            مشاهده
-
-                        </a>
-
-
-                        @if (User.IsInRole(Roles.WorkshopManager) &&
-                             req.Status == RequestStatus.PendingWorkshop)
+                        @if (User.IsInRole(Roles.WorkshopManager) && req.Status == RequestStatus.PendingWorkshop)
                         {
                             <a asp-action="Approve"
                                asp-route-id="@req.Id"
                                class="btn btn-success btn-sm">
-
                                 تایید
-
                             </a>
                         }
-
                     </td>
-
                 </tr>
             }
-
         </tbody>
-
     </table>
 
 </div>
