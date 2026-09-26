@@ -1,0 +1,227 @@
+﻿@using WarehouseApp.Domain.Core.Dtos._common
+@using WarehouseApp.Domain.Core.Dtos.Request
+
+@model PaginatedResult<GetAllRequestsForHistoryDto>
+
+@{
+    ViewData["Title"] = "تاریخچه درخواست‌ها";
+}
+
+<div class="container mt-4" dir="rtl">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="bi bi-clock-history me-2"></i>
+            تاریخچه درخواست‌ها
+        </h2>
+    </div>
+
+
+    @* Search *@
+    <form asp-action="History"
+          method="get"
+          class="card card-body shadow-sm mb-4">
+
+        <div class="row g-3 align-items-end">
+
+            <div class="col-md-8">
+
+                <label class="form-label">
+                    جستجوی شماره درخواست
+                </label>
+
+                <input type="text"
+                       name="search"
+                       value="@Context.Request.Query["search"]"
+                       class="form-control"
+                       placeholder="شماره درخواست را وارد کنید..." />
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <button type="submit"
+                        class="btn btn-primary">
+
+                    <i class="bi bi-search"></i>
+                    جستجو
+
+                </button>
+
+                <a asp-action="History"
+                   class="btn btn-outline-secondary">
+
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                    پاک کردن
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </form>
+
+
+    @if (Model.Items.Any())
+    {
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+                <h5 class="mb-0">
+                    لیست درخواست‌ها
+                </h5>
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover align-middle">
+
+                        <thead class="table-light">
+
+                            <tr>
+                                <th>شماره درخواست</th>
+                                <th>کارگاه</th>
+                                <th>انبار</th>
+                                <th>وضعیت فعلی</th>
+                                <th>تاریخ ایجاد</th>
+                                <th>عملیات</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            @foreach (var request in Model.Items)
+                            {
+                                <tr>
+
+                                    <td class="fw-bold">
+                                        @request.RequestNumber
+                                    </td>
+
+
+                                    <td>
+                                        @request.WorkshopName
+                                    </td>
+
+
+                                    <td>
+                                        @(request.WarehouseName ?? "-")
+                                    </td>
+
+
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            @request.CurrentStatus
+                                        </span>
+                                    </td>
+
+
+                                    <td>
+                                        @request.CreatedAt.ToString("yyyy/MM/dd HH:mm")
+                                    </td>
+
+
+                                    <td>
+
+                                        @* We'll implement this details page next *@
+                                        <a asp-action="HistoryDetails"
+                                           asp-route-id="@request.Id"
+                                           class="btn btn-sm btn-outline-primary">
+
+                                            <i class="bi bi-eye"></i>
+                                            مشاهده تاریخچه
+
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                @* Pagination *@
+                @if (Model.TotalPages > 1)
+                {
+                    <nav class="mt-4">
+
+                        <ul class="pagination justify-content-center">
+
+                            <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
+
+                                <a class="page-link"
+                                   asp-action="History"
+                                   asp-route-page="@(Model.Page - 1)"
+                                   asp-route-pageSize="@Model.PageSize"
+                                   asp-route-search="@Context.Request.Query["search"]">
+
+                                    قبلی
+
+                                </a>
+
+                            </li>
+
+
+                            @for (var i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == Model.Page ? "active" : "")">
+
+                                    <a class="page-link"
+                                       asp-action="History"
+                                       asp-route-page="@i"
+                                       asp-route-pageSize="@Model.PageSize"
+                                       asp-route-search="@Context.Request.Query["search"]">
+
+                                        @i
+
+                                    </a>
+
+                                </li>
+                            }
+
+
+                            <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : "")">
+
+                                <a class="page-link"
+                                   asp-action="History"
+                                   asp-route-page="@(Model.Page + 1)"
+                                   asp-route-pageSize="@Model.PageSize"
+                                   asp-route-search="@Context.Request.Query["search"]">
+
+                                    بعدی
+
+                                </a>
+
+                            </li>
+
+                        </ul>
+
+                    </nav>
+                }
+
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+
+            <i class="bi bi-info-circle me-1"></i>
+            هیچ درخواستی یافت نشد.
+
+        </div>
+    }
+
+</div>
