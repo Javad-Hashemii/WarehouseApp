@@ -12,5 +12,8 @@ namespace WarehouseApp.Domain.Core.Contracts.Service
         Task<ResultDto<bool>> CreateInventoryAsync(CreateInventoryDto createInventoryDto, CancellationToken ct);
         Task<List<GetAllInventoryDto>> GetAllInventoriesAsync(CancellationToken ct);
         Task<ResultDto<bool>> UpdateInventoryAsync(UpdateInventoryDto updateInventoryBalanceDto, CancellationToken ct);
+        Task<GetInventoryLocationsDto> GetInventoryLocationsAsync(CancellationToken ct);
+        Task<InventoryDetailsDto?> GetInventoryDetailsAsync(int stockLocationId, CancellationToken ct);
+        Task<ResultDto<ManagerInventoryLocationsDto>> GetManagerInventoryLocationsAsync(CancellationToken ct);
     }
 }
