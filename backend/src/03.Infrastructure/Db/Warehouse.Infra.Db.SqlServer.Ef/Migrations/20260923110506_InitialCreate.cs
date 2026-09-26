@@ -386,6 +386,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     WarehouseId = table.Column<int>(type: "int", nullable: true),
                     WorkshopId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -415,6 +416,45 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PurchaseRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PurchaseRequestNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    RequestId = table.Column<int>(type: "int", nullable: false),
+                    WorkshopId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Supplier = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ExpectedDeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedByUserId = table.Column<int>(type: "int", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedByUserId = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedByUserId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PurchaseRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PurchaseRequests_Requests_RequestId",
+                        column: x => x.RequestId,
+                        principalTable: "Requests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PurchaseRequests_Workshops_WorkshopId",
+                        column: x => x.WorkshopId,
+                        principalTable: "Workshops",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RequestHistories",
                 columns: table => new
                 {
@@ -423,16 +463,16 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     RequestId = table.Column<int>(type: "int", nullable: false),
                     FromStatus = table.Column<int>(type: "int", nullable: false),
                     ToStatus = table.Column<int>(type: "int", nullable: false),
-                    ChangedByUserId = table.Column<int>(type: "int", nullable: false),
-                    ChangedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedByUserId = table.Column<int>(type: "int", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedByUserId = table.Column<int>(type: "int", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedByUserId = table.Column<int>(type: "int", nullable: true)
+                    DeletedByUserId = table.Column<int>(type: "int", nullable: true),
+                    ChangedByUserId = table.Column<int>(type: "int", nullable: false),
+                    ChangedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -526,6 +566,43 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PurchaseRequestHistories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PurchaseRequestId = table.Column<int>(type: "int", nullable: false),
+                    FromStatus = table.Column<int>(type: "int", nullable: false),
+                    ToStatus = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedByUserId = table.Column<int>(type: "int", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedByUserId = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedByUserId = table.Column<int>(type: "int", nullable: true),
+                    ChangedByUserId = table.Column<int>(type: "int", nullable: false),
+                    ChangedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PurchaseRequestHistories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PurchaseRequestHistories_AspNetUsers_ChangedByUserId",
+                        column: x => x.ChangedByUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PurchaseRequestHistories_PurchaseRequests_PurchaseRequestId",
+                        column: x => x.PurchaseRequestId,
+                        principalTable: "PurchaseRequests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "InventoryTransactions",
                 columns: table => new
                 {
@@ -541,6 +618,7 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                     TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ReceivedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RequestId = table.Column<int>(type: "int", nullable: true),
+                    RequestItemId = table.Column<int>(type: "int", nullable: true),
                     PerformedByUserId = table.Column<int>(type: "int", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -571,6 +649,12 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
+                        name: "FK_InventoryTransactions_RequestItems_RequestItemId",
+                        column: x => x.RequestItemId,
+                        principalTable: "RequestItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_InventoryTransactions_Requests_RequestId",
                         column: x => x.RequestId,
                         principalTable: "Requests",
@@ -586,6 +670,51 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                         name: "FK_InventoryTransactions_StockLocations_SourceStockLocationId",
                         column: x => x.SourceStockLocationId,
                         principalTable: "StockLocations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PurchaseRequestItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PurchaseRequestId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    RequestItemId = table.Column<int>(type: "int", nullable: true),
+                    QuantityRequested = table.Column<decimal>(type: "decimal(18,3)", precision: 18, scale: 3, nullable: false),
+                    QuantityApproved = table.Column<decimal>(type: "decimal(18,3)", precision: 18, scale: 3, nullable: false, defaultValue: 0m),
+                    QuantityPurchased = table.Column<decimal>(type: "decimal(18,3)", precision: 18, scale: 3, nullable: false, defaultValue: 0m),
+                    QuantityReceived = table.Column<decimal>(type: "decimal(18,3)", precision: 18, scale: 3, nullable: false, defaultValue: 0m),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedByUserId = table.Column<int>(type: "int", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedByUserId = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedByUserId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PurchaseRequestItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PurchaseRequestItems_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PurchaseRequestItems_PurchaseRequests_PurchaseRequestId",
+                        column: x => x.PurchaseRequestId,
+                        principalTable: "PurchaseRequests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PurchaseRequestItems_RequestItems_RequestItemId",
+                        column: x => x.RequestItemId,
+                        principalTable: "RequestItems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -729,13 +858,13 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
 
             migrationBuilder.InsertData(
                 table: "StockLocations",
-                columns: new[] { "Id", "CreatedAt", "CreatedByUserId", "DeletedAt", "DeletedByUserId", "IsDeleted", "UpdatedAt", "UpdatedByUserId", "WarehouseId", "WorkshopId" },
+                columns: new[] { "Id", "CreatedAt", "CreatedByUserId", "DeletedAt", "DeletedByUserId", "IsDeleted", "Name", "UpdatedAt", "UpdatedByUserId", "WarehouseId", "WorkshopId" },
                 values: new object[,]
                 {
-                    { 5, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, null, null, null, 1 },
-                    { 6, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, null, null, null, 2 },
-                    { 7, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, null, null, null, 3 },
-                    { 8, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, null, null, null, 4 }
+                    { 5, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, "کارگاه ساختمانی شرق", null, null, null, 1 },
+                    { 6, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, "کارگاه تاسیسات مرکزی", null, null, null, 2 },
+                    { 7, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, "کارگاه برق و مکانیک", null, null, null, 3 },
+                    { 8, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, "کارگاه عمرانی جنوب", null, null, null, 4 }
                 });
 
             migrationBuilder.InsertData(
@@ -751,13 +880,28 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
 
             migrationBuilder.InsertData(
                 table: "StockLocations",
-                columns: new[] { "Id", "CreatedAt", "CreatedByUserId", "DeletedAt", "DeletedByUserId", "IsDeleted", "UpdatedAt", "UpdatedByUserId", "WarehouseId", "WorkshopId" },
+                columns: new[] { "Id", "CreatedAt", "CreatedByUserId", "DeletedAt", "DeletedByUserId", "IsDeleted", "Name", "UpdatedAt", "UpdatedByUserId", "WarehouseId", "WorkshopId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, null, null, 1, null },
-                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, null, null, 2, null },
-                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, null, null, 3, null },
-                    { 4, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, null, null, 4, null }
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, "انبار مرکزی ماهشهر", null, null, 1, null },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, "انبار بهبهان", null, null, 2, null },
+                    { 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, "انبار اصفهان", null, null, 3, null },
+                    { 4, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, null, null, false, "انبار شیراز", null, null, 4, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "InventoryBalances",
+                columns: new[] { "Id", "CreatedAt", "CreatedByUserId", "DeletedAt", "DeletedByUserId", "IsDeleted", "LastUpdatedAt", "ProductId", "Quantity", "StockLocationId", "UpdatedAt", "UpdatedByUserId" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 67, null, null, false, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 100m, 1, null, null },
+                    { 2, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 67, null, null, false, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 11, 500m, 1, null, null },
+                    { 3, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 67, null, null, false, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 75m, 2, null, null },
+                    { 4, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 67, null, null, false, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 11, 300m, 2, null, null },
+                    { 5, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 67, null, null, false, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 50m, 3, null, null },
+                    { 6, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 67, null, null, false, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 11, 200m, 3, null, null },
+                    { 7, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 67, null, null, false, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 40m, 4, null, null },
+                    { 8, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 67, null, null, false, new DateTime(2026, 8, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 11, 150m, 4, null, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -847,6 +991,11 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                 column: "RequestId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_InventoryTransactions_RequestItemId",
+                table: "InventoryTransactions",
+                column: "RequestItemId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_InventoryTransactions_SourceStockLocationId",
                 table: "InventoryTransactions",
                 column: "SourceStockLocationId");
@@ -865,6 +1014,42 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                 name: "IX_Products_SubCategoryId",
                 table: "Products",
                 column: "SubCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PurchaseRequestHistories_ChangedByUserId",
+                table: "PurchaseRequestHistories",
+                column: "ChangedByUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PurchaseRequestHistories_PurchaseRequestId",
+                table: "PurchaseRequestHistories",
+                column: "PurchaseRequestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PurchaseRequestItems_ProductId",
+                table: "PurchaseRequestItems",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PurchaseRequestItems_PurchaseRequestId",
+                table: "PurchaseRequestItems",
+                column: "PurchaseRequestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PurchaseRequestItems_RequestItemId",
+                table: "PurchaseRequestItems",
+                column: "RequestItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PurchaseRequests_RequestId",
+                table: "PurchaseRequests",
+                column: "RequestId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PurchaseRequests_WorkshopId",
+                table: "PurchaseRequests",
+                column: "WorkshopId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RequestHistories_ChangedByUserId",
@@ -991,16 +1176,25 @@ namespace WarehouseApp.Infra.Db.SqlServer.Ef.Migrations
                 name: "InventoryTransactions");
 
             migrationBuilder.DropTable(
-                name: "RequestHistories");
+                name: "PurchaseRequestHistories");
 
             migrationBuilder.DropTable(
-                name: "RequestItems");
+                name: "PurchaseRequestItems");
+
+            migrationBuilder.DropTable(
+                name: "RequestHistories");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "StockLocations");
+
+            migrationBuilder.DropTable(
+                name: "PurchaseRequests");
+
+            migrationBuilder.DropTable(
+                name: "RequestItems");
 
             migrationBuilder.DropTable(
                 name: "Products");
