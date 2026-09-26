@@ -13,7 +13,7 @@ namespace WarehouseApp.Domain.Core.Entities
 
         public Warehouse? Warehouse { get; set; }
 
-        public StockLocation? StockLocation { get; set; }
+        public StockLocation StockLocation { get; set; } = null!;
 
         public ICollection<Request> Requests { get; set; }
             = new List<Request>();
