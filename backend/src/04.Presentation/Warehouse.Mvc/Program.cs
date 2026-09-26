@@ -33,6 +33,7 @@ builder.Services.AddDataAccessEf(siteSettings);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IRequestDraftService, RequestDraftService>();
 builder.Services.AddScoped<IEditRequestDraftService, EditRequestDraftService>();
+builder.Services.AddScoped<IPurchaseDecisionDraftService, PurchaseDecisionDraftService>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(
     options =>
     {
@@ -67,12 +68,11 @@ app.UseAuthentication();
 app.UseSession();
 app.UseAuthorization();
 
-app.MapStaticAssets();
+app.UseStaticFiles();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
 app.Run();
