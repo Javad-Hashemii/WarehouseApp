@@ -7,6 +7,7 @@ using WarehouseApp.Domain.Core.Contracts.Repository;
 using WarehouseApp.Domain.Core.Dtos._common;
 using WarehouseApp.Domain.Core.Dtos.Product;
 using WarehouseApp.Domain.Core.Entities;
+using WarehouseApp.Infra.Data.Repos.Ef.Extensions;
 using WarehouseApp.Infra.Db.SqlServer.Ef.DbContext;
 
 namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
@@ -112,12 +113,17 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
             return affectedRows > 0;
         }
 
-        public async Task<PaginatedResult<GetAllProductsDto>> SearchProductsAsync(string? search, int page, int pageSize, int? categoryId, int? subCategoryId, CancellationToken ct)
+        public async Task<PaginatedResult<GetAllProductsDto>> SearchProductsAsync(
+     string? search,
+     int page,
+     int pageSize,
+     int? categoryId,
+     int? subCategoryId,
+     CancellationToken ct)
         {
             var query = _context.Products
                 .AsNoTracking()
                 .Where(p => !p.IsDeleted);
-
 
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -125,13 +131,11 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                     p.Name.Contains(search));
             }
 
-
             if (categoryId.HasValue)
             {
                 query = query.Where(p =>
                     p.CategoryId == categoryId.Value);
             }
-
 
             if (subCategoryId.HasValue)
             {
@@ -139,17 +143,8 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                     p.SubCategoryId == subCategoryId.Value);
             }
 
-
-            var totalCount = await query.CountAsync(ct);
-
-
-            var products = await query
+            var projectedQuery = query
                 .OrderBy(p => p.Name)
-
-                .Skip((page - 1) * pageSize)
-
-                .Take(pageSize)
-
                 .Select(p => new GetAllProductsDto
                 {
                     Id = p.Id,
@@ -159,18 +154,10 @@ namespace WarehouseApp.Infra.Data.Repos.Ef.Repositories
                     SubCategoryName = p.SubCategory != null
                         ? p.SubCategory.Name
                         : null
-                })
+                });
 
-                .ToListAsync(ct);
-
-
-            return new PaginatedResult<GetAllProductsDto>
-            {
-                Items = products,
-                Page = page,
-                PageSize = pageSize,
-                TotalCount = totalCount
-            };
+            return await projectedQuery
+                .ToPaginatedResultAsync(page, pageSize, ct);
         }
     }
 }
