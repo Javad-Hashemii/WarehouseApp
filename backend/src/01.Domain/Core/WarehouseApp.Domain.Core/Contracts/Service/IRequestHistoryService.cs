@@ -12,6 +12,8 @@ namespace WarehouseApp.Domain.Core.Contracts.Service
         void CreateRequestHistoryAsync(CreateRequestHistoryDto createRequestHistoryDto);
         Task<List<GetAllRequestHistoriesDto>> GetAllRequestHistoriesAsync(CancellationToken ct);
         Task<List<GetAllRequestHistoriesDto>> GetAllRequestHistoriesByRequestIdAsync(int requestId, CancellationToken ct);
+        Task<ResultDto<List<GetRequestHistoryDetail>>> GetRequestHistoryDetailsAsync(int requestId, CancellationToken ct);
+        Task<ResultDto<RequestHistoryDetailsDto>> GetDetailsAsync(int requestId, CancellationToken ct);
 
     }
 }
