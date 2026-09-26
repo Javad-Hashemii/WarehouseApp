@@ -1,0 +1,107 @@
+﻿@model Warehouse.Mvc.Models.InventoryBalance.AdminInventoryIndexViewModel
+
+@{
+    ViewData["Title"] = "موجودی";
+}
+
+<div class="container mt-4" dir="rtl">
+
+    <div class="mb-4">
+        <h4>مدیریت موجودی</h4>
+        <span class="text-muted">
+            انتخاب انبار یا کارگاه
+        </span>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">انبارها</h5>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>نام انبار</th>
+                            <th>شهر</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var warehouse in Model.Warehouses)
+                        {
+                            <tr>
+                                <td>@warehouse.Name</td>
+
+                                <td>@warehouse.CityName</td>
+
+                                <td>
+                                    <a asp-action="Details"
+                                       asp-route-stockLocationId="@warehouse.StockLocationId"
+                                       class="btn btn-sm btn-outline-primary">
+                                        مشاهده
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h5 class="mb-0">کارگاه‌ها</h5>
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover align-middle">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>نام کارگاه</th>
+                            <th>شهر</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var workshop in Model.Workshops)
+                        {
+                            <tr>
+                                <td>@workshop.Name</td>
+
+                                <td>@workshop.CityName</td>
+
+                                <td>
+                                    <a asp-action="Details"
+                                       asp-route-stockLocationId="@workshop.StockLocationId"
+                                       class="btn btn-sm btn-outline-primary">
+                                        مشاهده
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+</div>
